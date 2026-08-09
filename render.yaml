@@ -27,4 +27,4 @@ services:
         value: nosniff
       - path: /*
         name: Referrer-Policy
-        value: strict-origin-when-cross-origin
+        value: no-referrer
