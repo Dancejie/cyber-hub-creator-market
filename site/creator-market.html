@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/assets/creatorMarket-DSPe66sd.js"></script>
+    <script type="module" crossorigin src="/assets/creatorMarket-B2XiA2ji.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
     <link rel="stylesheet" crossorigin href="/assets/creatorMarket-CH9z5x-e.css">
   </head>
@@ -23,6 +23,22 @@
         <div class="market-loading__track"><i id="market-loading-bar"></i></div>
         <small id="market-loading-copy">先开放广场，再让居民陆续入场</small>
       </div>
+      <script>
+        (() => {
+          const releaseLoadingGate = () => {
+            const gate = document.getElementById('market-loading')
+            if (!gate || gate.classList.contains('is-done')) return
+            const bar = document.getElementById('market-loading-bar')
+            const copy = document.getElementById('market-loading-copy')
+            if (bar) bar.style.width = '100%'
+            if (copy) copy.textContent = '已进入广场，其余资源后台继续加载'
+            gate.classList.add('is-done')
+          }
+          window.setTimeout(releaseLoadingGate, 7_000)
+          window.addEventListener('error', () => window.setTimeout(releaseLoadingGate, 1_200), { once: true })
+          window.addEventListener('unhandledrejection', () => window.setTimeout(releaseLoadingGate, 1_200), { once: true })
+        })()
+      </script>
 
       <div class="market-hud">
         <header class="market-topbar">
