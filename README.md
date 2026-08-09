@@ -1,30 +1,23 @@
-# Cyber Hub Creator Market
+# Cyber Hub · Five Worlds
 
-Public, deployment-ready fallback for the Cyber Hub 3D creator market.
+Public deployment artifact restored from the 2026-08-01 Cyber Hub release line.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FDancejie%2Fcyber-hub-creator-market)
+The site contains the original five-world experience:
 
-## What is included
+- Kunpeng Immortal Realm
+- Meme Town
+- Biohazard Town
+- Impossible Mission
+- F1 Racing World
 
-- The prebuilt 3D world under `site/`
-- 195 participant appearances (173 local runtime GLBs and 22 CDN-mapped GLBs)
-- 42 supporter appearances
-- 102 project booths and 367 project media files
-- Character and project search, direct control, group-photo placement, and no-UI photo mode
-- A Render Blueprint that publishes the prebuilt bundle without rebuilding or recompressing assets
+The static site is published from `site/` through Render. Large original media assets use the CDN mappings recorded by the August 1 release pipeline.
 
-## Public fallback behavior
+## Provenance
 
-The Cowork edition uses company SSO and PostgreSQL for shared likes, comments, and intent totals. This public static fallback deliberately does not expose that internal backend. When the API is absent, social state falls back to the current browser's local storage; the 3D world itself remains fully playable.
-
-## Render
-
-`render.yaml` declares a static site whose publish directory is `site`. No package installation or source build is required.
-
-## Archived Cowork package
-
-The [2026-08-06 GitHub Release](https://github.com/Dancejie/cyber-hub-creator-market/releases/tag/cowork-backup-2026-08-06) preserves the independently validated Cowork ZIP used to create this public fallback. Its SHA-256 is `96cf853144970db8afa2859bfa2aff6658200230f08870efeb01355e6cdfbcce`.
+- Clean baseline commit: `d6f0f3c251788a9b574b157a42d6f30d32c1a6b9`
+- Cowork release line: `v1.0.19`, 2026-08-01 09:27 Asia/Shanghai
+- The later creator bazaar application is not included in the published directory.
 
 ## Rights
 
-This repository is a preview deployment artifact. No license is granted for third-party project media, participant likenesses, or character assets.
+This repository is a preview deployment artifact. No license is granted for third-party media or character assets.

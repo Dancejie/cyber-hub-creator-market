@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="theme-color" content="#080b0a" />
+    <meta
+      name="description"
+      content="BIOCRISIS 生化隔离星球：经典固定机位、3D 骨骼角色、自动导演与随时接管的生存恐怖原型。"
+    />
+    <title>BIOCRISIS · 生化隔离星球</title>
+    <script type="module" crossorigin src="/world-runtime/agent-planet/assets/biocrisis-BuP0S-60.js"></script>
+    <link rel="modulepreload" crossorigin href="/world-runtime/agent-planet/assets/GLTFLoader-bQKC3__A.js">
+    <link rel="modulepreload" crossorigin href="/world-runtime/agent-planet/assets/SkeletonUtils-BCVmgslc.js">
+    <link rel="stylesheet" crossorigin href="/world-runtime/agent-planet/assets/biocrisis-BaSCtCUM.css">
+  </head>
+  <body>
+    <main id="app" data-control="auto" data-room="archive">
+      <canvas id="world" aria-label="生化隔离星球 3D 固定机位游戏"></canvas>
+      <div class="grade" aria-hidden="true"></div>
+      <div class="noise" aria-hidden="true"></div>
+
+      <section id="entry" class="screen entry">
+        <video
+          id="entry-film"
+          autoplay
+          playsinline
+          preload="auto"
+          poster="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abd0tr0a06h8kav0270000000000ptv5r4c.png"
+        >
+          <source id="entry-source" src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abcpt1g206h8kav0270000000000repv0ts.mp4" type="video/mp4" />
+        </video>
+        <button id="entry-audio-gate" class="entry-audio-gate is-hidden" type="button">
+          <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/incident-emblem.png" alt="" />
+          <span>点击画面启用声音</span>
+          <small>浏览器需要一次交互才能以完整音量播放</small>
+        </button>
+      </section>
+      <audio
+        id="background-music"
+        src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abd1tn7u06h8kav0270000000000unp2sm6.mp4"
+        preload="auto"
+        loop
+      ></audio>
+
+      <section id="loading" class="screen loading is-hidden" aria-live="polite">
+        <div class="bio-mark"><i></i><i></i><i></i><b></b></div>
+        <p>正在同步隔离区骨骼模型</p>
+        <strong id="loading-percent">00%</strong>
+        <div class="loading-track"><i id="loading-fill"></i></div>
+        <small id="loading-label">建立档案署固定机位</small>
+      </section>
+
+      <section id="hud" class="hud is-hidden">
+        <header class="topbar">
+          <div class="brand">
+            <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/incident-emblem.png" alt="" />
+            <div><strong>BIOCRISIS</strong><span>PAWVERSE INCIDENT 09</span></div>
+          </div>
+          <div class="room">
+            <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/fixed-camera.png" alt="" />
+            <div><small>FIXED CAMERA</small><strong id="camera-code">CAM 01 // ARCHIVE HALL</strong></div>
+          </div>
+          <div class="top-actions">
+            <button id="pause-button" aria-label="暂停">
+              <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/pause.png" alt="" />
+            </button>
+          </div>
+        </header>
+
+        <aside class="objective">
+          <p>ACTIVE CASE</p>
+          <strong id="objective-title">寻找档案室钥匙</strong>
+          <span id="objective-detail">调查西侧值班桌</span>
+          <div><i id="objective-progress"></i></div>
+        </aside>
+
+        <aside id="director" class="director">
+          <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/auto-director.png" alt="" />
+          <div>
+            <small>CONTROL</small>
+            <strong id="director-mode">AUTO DIRECTOR</strong>
+          </div>
+          <div>
+            <small>SCENE</small>
+            <strong id="director-scene">01 / 08</strong>
+          </div>
+          <i><b id="director-progress"></b></i>
+          <p id="director-note">观察模式运行中 · 输入即可接管</p>
+        </aside>
+
+        <aside class="condition">
+          <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/vitals.png" alt="" />
+          <div class="condition-copy">
+            <small>CONDITION</small>
+            <strong id="condition-label">FINE</strong>
+            <div><i id="health-fill"></i></div>
+          </div>
+          <span id="health-value">100</span>
+        </aside>
+
+        <aside class="inventory">
+          <div class="weapon-icon" aria-hidden="true">
+            <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/service-pistol.png" alt="" />
+          </div>
+          <div>
+            <small>SERVICE PISTOL</small>
+            <strong><span id="ammo-value">08</span><em>/</em><span id="reserve-value">24</span></strong>
+          </div>
+          <div id="key-slot" class="key-slot">
+            <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/archive-key.png" alt="" />
+            <span>NO KEY</span>
+          </div>
+        </aside>
+
+        <div id="aim-reticle" class="reticle is-hidden"><i></i><b></b></div>
+        <div id="interaction" class="interaction is-hidden">
+          <img src="/world-runtime/agent-planet/assets/biocrisis/ui/icons/interact.png" alt="" />
+          <div><small>INTERACT · E</small><strong id="interaction-label">调查</strong></div>
+        </div>
+        <div id="toast" class="toast is-hidden" aria-live="assertive"></div>
+        <p class="controls-hint">
+          <span>WASD</span> 朝输入方向移动并转身　<span>鼠标 / SPACE</span> 射击　<span>E</span> 调查
+        </p>
+      </section>
+
+      <section id="pause-screen" class="screen pause is-hidden">
+        <div>
+          <small>INCIDENT SUSPENDED</small>
+          <h2>游戏暂停</h2>
+          <button id="resume-button" class="primary"><span>返回隔离区</span><kbd>ESC</kbd></button>
+          <button id="restart-button" class="text-button">重新开始本次事件</button>
+        </div>
+      </section>
+
+      <section id="ending" class="screen ending is-hidden">
+        <div>
+          <p class="eyebrow">INCIDENT REPORT // COMPLETE</p>
+          <h2>天亮以前<br />不要回头</h2>
+          <p id="ending-copy">你带着档案钥匙穿过了最后一道隔离门。</p>
+          <dl>
+            <div><dt>生还状态</dt><dd id="ending-health">FINE</dd></div>
+            <div><dt>剩余弹药</dt><dd id="ending-ammo">08 / 24</dd></div>
+            <div><dt>接管次数</dt><dd id="ending-takeovers">0</dd></div>
+          </dl>
+          <button id="replay-button" class="primary"><span>再次进入</span><kbd>R</kbd></button>
+        </div>
+      </section>
+
+      <section id="game-over" class="screen game-over is-hidden">
+        <img
+          class="failure-art"
+          src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abd2qr7u06h8kav0270000000000qjuq9uq.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <div>
+          <small>VITAL SIGNAL LOST</small>
+          <h2>感染已扩散</h2>
+          <p>隔离区失守。感染者正沿着地下通道向城市扩散。</p>
+          <button id="retry-button" class="primary"><span>从事件起点重试</span><kbd>R</kbd></button>
+        </div>
+      </section>
+
+      <div id="touch-controls" class="touch-controls is-hidden">
+        <div class="touch-move">
+          <button data-key="KeyW">▲</button>
+          <button data-key="KeyA">◀</button>
+          <button data-key="KeyS">▼</button>
+          <button data-key="KeyD">▶</button>
+        </div>
+        <div class="touch-action">
+          <button data-action="interact">调查</button>
+          <button data-action="shoot">射击</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

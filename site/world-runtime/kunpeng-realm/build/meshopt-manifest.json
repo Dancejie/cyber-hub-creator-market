@@ -1,0 +1,30 @@
+{
+  "schema": "zhouyi-web-meshopt-v1",
+  "input": "build/zhouyi-celestial-world-web-compatible.glb",
+  "output": "https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abcjb9g206h8kav0270000000000slsvlte.glb",
+  "compression": {
+    "extension": "EXT_meshopt_compression",
+    "level": "high",
+    "quantizePositionBits": 14,
+    "quantizeNormalBits": 10,
+    "quantizeTexcoordBits": 12,
+    "quantizeWeightBits": 12,
+    "textureExtension": "EXT_texture_webp",
+    "textureQuality": 55
+  },
+  "fileBytes": 24732204,
+  "sha256": "239275c9d77398c1ee055cbe0c32ab1cfb088c32d860d33df47207fe6a695171",
+  "validation": {
+    "gltfErrors": 0,
+    "skins": 4,
+    "jointsPerSkin": [41, 41, 41, 41],
+    "invalidJointReferences": 0,
+    "zeroWeightVertices": 0,
+    "visualNpcExplosion": false,
+    "browserConsoleErrors": 0
+  },
+  "runtime": {
+    "threeJs": "Call GLTFLoader.setMeshoptDecoder(MeshoptDecoder); runtime also requires WebP texture support",
+    "fallback": "build/zhouyi-celestial-world-web-compatible.glb"
+  }
+}

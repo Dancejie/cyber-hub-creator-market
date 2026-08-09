@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#030508" />
+    <meta name="description" content="BLACK ORBIT 特工星球：可自由探索的 3D 特工世界与三段电影化任务。" />
+    <title>BLACK ORBIT · 特工星球</title>
+    <script type="module" crossorigin src="/world-runtime/agent-planet/assets/main-CIyCXtzf.js"></script>
+    <link rel="modulepreload" crossorigin href="/world-runtime/agent-planet/assets/GLTFLoader-bQKC3__A.js">
+    <link rel="modulepreload" crossorigin href="/world-runtime/agent-planet/assets/SkeletonUtils-BCVmgslc.js">
+    <link rel="stylesheet" crossorigin href="/world-runtime/agent-planet/assets/main-zEs2Idr0.css">
+  </head>
+  <body>
+    <main id="app" data-mode="splash" data-accent="gold">
+      <canvas id="world" aria-label="可自由探索的 3D 特工星球"></canvas>
+      <audio id="bgm-player" autoplay loop preload="auto" playsinline aria-hidden="true"></audio>
+      <div class="film-grain" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div id="weapon-media-layer" class="weapon-media-layer is-hidden" aria-hidden="true">
+        <video id="weapon-inspect-media" class="weapon-media weapon-inspect-media" muted playsinline preload="auto">
+          <source src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abd37r0a06h8kav0270000000000s6jpqj2.webm" type="video/webm" />
+        </video>
+        <video id="weapon-fire-media" class="weapon-media weapon-fire-media" muted playsinline preload="auto">
+          <source src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abcudb0a06h8kav0270000000000quulrrg.webm" type="video/webm" />
+        </video>
+        <video id="weapon-ads-fire-media" class="weapon-media weapon-ads-fire-media" muted playsinline preload="auto">
+          <source src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abd3o07k06h8kav0270000000000uacs3dm.webm" type="video/webm" />
+        </video>
+        <video id="muzzle-fire-single-media" class="muzzle-fire-media muzzle-fire-single-media" muted playsinline preload="auto">
+          <source src="/world-runtime/agent-planet/assets/video/muzzle-fire-single-alpha.webm" type="video/webm" />
+        </video>
+        <video id="muzzle-fire-burst-media" class="muzzle-fire-media muzzle-fire-burst-media" muted playsinline preload="auto">
+          <source src="/world-runtime/agent-planet/assets/video/muzzle-fire-burst-alpha.webm" type="video/webm" />
+        </video>
+      </div>
+      <div id="scope-media-layer" class="scope-media-layer is-hidden" aria-hidden="true">
+        <video id="scope-media" class="scope-media" muted playsinline preload="auto">
+          <source src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abcrqpnu06h8kav0270000000000q649nma.webm" type="video/webm" />
+        </video>
+        <div class="scope-readout"><span>OPTIC // ×4</span><i></i><span>HOLD RMB</span></div>
+      </div>
+
+      <section id="splash" class="screen splash intro-overlay" aria-label="BLACK ORBIT 电影片头">
+        <video
+          id="intro-film"
+          class="intro-film"
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+          poster="/world-runtime/agent-planet/assets/video/agent-planet-entry-poster.jpg"
+          aria-hidden="true"
+        >
+          <source src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abcvp87u06h8kav0270000000000vumqmaa.mp4" type="video/mp4" />
+        </video>
+        <div class="intro-shade" aria-hidden="true"></div>
+        <div class="intro-status" aria-hidden="true">
+          <div><span class="intro-channel">BLACK ORBIT // INCOMING TRANSMISSION</span><span id="intro-progress-value">00%</span></div>
+          <div class="intro-progress"><i></i></div>
+          <small>影片结束后自动进入 3D 世界</small>
+        </div>
+        <button id="enter-world" class="intro-skip" type="button" aria-label="跳过片头">
+          <span>跳过片头</span><kbd>ENTER</kbd>
+        </button>
+      </section>
+
+      <section id="loading" class="screen loading is-hidden" aria-live="polite">
+        <div class="loader-orbit"><i></i><b></b></div>
+        <small id="loading-label">正在建立轨道连接</small>
+        <strong id="loading-percent">00%</strong>
+        <div class="load-track"><i id="loading-fill"></i></div>
+      </section>
+
+      <section id="hud" class="hud is-hidden">
+        <header class="topbar">
+          <div class="brand">
+            <i></i>
+            <div><strong>BLACK ORBIT</strong><span id="location-code">HUB // OB-07</span></div>
+          </div>
+          <nav id="mission-nav" aria-label="任务轨道">
+            <button data-mission="stealth" class="active"><em>01</em><span>侦查</span><i></i></button>
+            <button data-mission="shoot"><em>02</em><span>射击</span><i></i></button>
+            <button data-mission="runner"><em>03</em><span>逃亡</span><i></i></button>
+          </nav>
+          <div class="top-actions">
+            <a class="biocrisis-gate" href="/world-runtime/agent-planet/biocrisis.html?v=1.0.13" title="前往生化隔离星球">BIO</a>
+            <button id="overview" title="回到星球总览">◎<span>总览</span></button>
+            <button id="audio-toggle" title="开关音乐">◖<span>音乐</span></button>
+            <button id="pause" title="暂停">Ⅱ</button>
+          </div>
+        </header>
+
+        <aside class="mission-card">
+          <p>CURRENT OPERATION</p>
+          <strong id="mission-name">寻找 007 侦查区入口</strong>
+          <span id="mission-detail">跟随金色信标抵达 NOCTURNE 区域</span>
+          <div><i id="mission-progress"></i></div>
+        </aside>
+
+        <aside id="director-status" class="director-status" data-control="auto">
+          <div>
+            <small>CONTROL</small>
+            <strong id="director-mode">AUTO DIRECTOR</strong>
+          </div>
+          <div>
+            <small>STAGE</small>
+            <strong id="director-timer">00.0 / 30.0s</strong>
+          </div>
+          <p><span id="director-fps">60 FPS</span><span id="director-draw">0 DRAW</span><span id="director-tris">0K TRI</span></p>
+          <i><b id="director-progress"></b></i>
+          <em>665KB CORE · 1.8MB TERRAIN</em>
+        </aside>
+
+        <aside class="telemetry">
+          <small id="telemetry-label">隐蔽度</small>
+          <div><i id="telemetry-fill"></i></div>
+          <strong id="telemetry-value">100</strong>
+        </aside>
+
+        <aside class="now-playing">
+          <div class="bars"><i></i><i></i><i></i><i></i></div>
+          <p><small>NOW PLAYING</small><strong id="track-title">轨道环境音</strong><span id="track-film">等待任务接入</span></p>
+        </aside>
+
+        <div id="world-hint" class="world-hint">
+          自动导演运行中　<span>WASD / 鼠标 / 触控</span> 随时接管
+        </div>
+        <div id="interact" class="interact is-hidden"><kbd>E</kbd><div><small id="interact-kicker">MISSION GATE</small><strong id="interact-label">进入幽灵协议</strong></div><i></i></div>
+        <div id="crosshair" class="crosshair is-hidden"><i></i><b></b></div>
+        <div id="ammo" class="ammo is-hidden"><small>AMMO</small><strong id="ammo-value">08</strong><span id="ammo-reserve">/ 48</span><i id="reload-progress"></i></div>
+        <div id="toast" class="toast is-hidden" aria-live="assertive"></div>
+      </section>
+
+      <section id="comic" class="screen comic is-hidden" data-comic="stealth" style="--comic-art:url('/world-runtime/agent-planet/assets/art/agent-triptych-transition-v2.webp')" aria-live="polite">
+        <div class="comic-grid">
+          <div class="panel panel-a"><span class="halftone"></span><b id="comic-word-a">窥见</b><i></i></div>
+          <div class="panel panel-b"><span class="halftone"></span><b id="comic-word-b">解码</b><i></i></div>
+          <div class="panel panel-c"><span class="halftone"></span><b id="comic-word-c">潜入</b><i></i></div>
+        </div>
+        <div class="comic-title"><small id="comic-kicker">CHAPTER 01 // RECON</small><strong id="comic-title">幽灵协议</strong><span id="comic-subtitle">JAMES BOND THEME</span></div>
+      </section>
+
+      <section id="pause-screen" class="screen pause-screen is-hidden">
+        <div class="pause-card">
+          <small>OPERATION SUSPENDED</small>
+          <h2>任务暂停</h2>
+          <button id="resume" class="cta"><span>继续任务</span><kbd>ESC</kbd></button>
+          <button id="restart" class="ghost">重新开始当前任务</button>
+        </div>
+      </section>
+
+      <section id="debrief" class="screen debrief is-hidden">
+        <div class="debrief-card">
+          <p class="eyebrow">MISSION COMPLETE</p>
+          <h2>世界从未知道<br />它被拯救过</h2>
+          <div class="final-stats">
+            <div class="rank"><small>综合评级</small><strong id="final-rank">S</strong></div>
+            <div><small>任务用时</small><strong id="final-time">02:18</strong></div>
+            <div><small>情报积分</small><strong id="final-score">12,840</strong></div>
+          </div>
+          <div class="complete-tags"><span>✓ 侦查完成</span><span>✓ 交火完成</span><span>✓ 逃亡完成</span></div>
+          <button id="replay" class="cta"><span>重新降落</span><kbd>R</kbd></button>
+        </div>
+      </section>
+
+      <div id="touch-controls" class="touch-controls is-hidden">
+        <div class="dpad">
+          <button data-key="KeyW">▲</button><button data-key="KeyA">◀</button>
+          <button data-key="KeyS">▼</button><button data-key="KeyD">▶</button>
+        </div>
+        <button id="touch-action">行动</button>
+      </div>
+    </main>
+    <script>
+      (() => {
+        const overlay = document.getElementById('splash')
+        const film = document.getElementById('intro-film')
+        const progressValue = document.getElementById('intro-progress-value')
+        const enter = document.getElementById('enter-world')
+        if (!overlay || !film || !enter) return
+
+        const updateProgress = () => {
+          const progress = Number.isFinite(film.duration) && film.duration > 0
+            ? Math.min(100, film.currentTime / film.duration * 100)
+            : 0
+          overlay.style.setProperty('--intro-progress', `${progress}%`)
+          if (progressValue) progressValue.textContent = `${String(Math.round(progress)).padStart(2, '0')}%`
+        }
+
+        film.addEventListener('loadedmetadata', updateProgress)
+        film.addEventListener('timeupdate', updateProgress)
+        film.addEventListener('ended', () => enter.click(), { once: true })
+        film.addEventListener('error', () => {
+          overlay.classList.add('intro-unavailable')
+          window.setTimeout(() => enter.click(), 280)
+        }, { once: true })
+      })()
+    </script>
+  </body>
+</html>

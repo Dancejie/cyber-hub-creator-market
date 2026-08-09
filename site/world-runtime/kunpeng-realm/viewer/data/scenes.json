@@ -1,0 +1,103 @@
+{
+  "version": "xuanxu-prologue-v1",
+  "title": "玄墟八象问命",
+  "promise": "你是没有命册记录的界外映世者；在十分钟内完成照面引雷、听见八象回声，并决定如何使用这份力量。",
+  "scenes": {
+    "gate": {
+      "id": "S001",
+      "title": "门外无名",
+      "location": "迎仙门",
+      "lines": [
+        { "speaker": "白衣仙子", "text": "慢些。此门今日没有接引名册，你是随哪一道念头来的？" },
+        { "speaker": "太极推算师", "text": "无籍、无印、无前尘……卦池或许能照见你从哪里来。" },
+        { "speaker": "抱萝卜灵兽", "text": "不是妖气。像是……很远很远的雨。" }
+      ]
+    },
+    "pool": {
+      "id": "S002",
+      "title": "池中无影",
+      "location": "卦池外环",
+      "lines": [
+        { "speaker": "太极推算师", "text": "池不照你，不等于天地拒你。张开手，让它先认得你的存在。" },
+        { "speaker": "青衣仙君", "text": "若池水转黑，立即断阵。" },
+        { "speaker": "白衣仙子", "text": "我守外环。你只需看着自己的手。" }
+      ]
+    },
+    "reveal": {
+      "id": "S003",
+      "title": "雷后余声",
+      "location": "卦池阵眼",
+      "lines": [
+        { "speaker": "太极推算师", "text": "{guaName}，{element}。此象只照今日，不锁来日。" },
+        { "speaker": "白衣仙子", "text": "雷落下时，主楼的锁链比卦池晚响了一拍。" },
+        { "speaker": "抱萝卜灵兽", "text": "你的雷把我的萝卜毛都竖起来了。" }
+      ]
+    },
+    "tea": {
+      "id": "S004",
+      "title": "一盏茶的去处",
+      "location": "茶室",
+      "lines": [
+        { "speaker": "青衣仙君", "text": "{guaName}是你此刻的回声，不是锁住你的判词。你想让这份力量去哪里？" }
+      ],
+      "choices": [
+        { "id": "strength", "label": "我要力量，但我会亲自承担使用它的代价。" },
+        { "id": "truth", "label": "我要知道真相：为什么命册里没有我的名字？", "default": true },
+        { "id": "explore", "label": "我先看看这里，再决定把力量交给什么。" }
+      ]
+    },
+    "tea_strength": {
+      "id": "S004A",
+      "title": "锋芒先行",
+      "location": "茶室",
+      "lines": [
+        { "speaker": "青衣仙君", "text": "力量最喜欢借口。你既肯承担，我便看你能不能守住这句话。" }
+      ]
+    },
+    "tea_truth": {
+      "id": "S004B",
+      "title": "缺失的一页",
+      "location": "茶室",
+      "lines": [
+        { "speaker": "青衣仙君", "text": "命册不是忘了你，而是有人先一步取走了属于你的那一爻。" }
+      ]
+    },
+    "tea_explore": {
+      "id": "S004C",
+      "title": "先看一眼人间",
+      "location": "茶室",
+      "lines": [
+        { "speaker": "青衣仙君", "text": "肯先看清脚下的人，往往比急着登天的人走得更远。" },
+        { "speaker": "抱萝卜灵兽", "text": "那我先跟着你。迷路的时候，萝卜会知道风从哪边来。" }
+      ]
+    },
+    "tea_derail": {
+      "id": "S004X",
+      "title": "茶烟里的怪话",
+      "location": "茶室",
+      "lines": [
+        { "speaker": "青衣仙君", "text": "这句话连卦池都不肯替你解释。先把它当作一枚未落下的爻，等你想清楚再说。" }
+      ]
+    },
+    "palace": {
+      "id": "S005",
+      "title": "第三笔",
+      "location": "主楼前庭",
+      "lines": [
+        { "speaker": "太极推算师", "text": "第一笔记{guaName}，第二笔记你的选择；第三笔仍旧留白。" },
+        { "speaker": "太极推算师", "text": "玄墟记住你，却不会替你写完。" },
+        { "speaker": "青衣仙君", "text": "今日是你问天地。等第三笔落下，便轮到天地来问你。" }
+      ]
+    }
+  },
+  "gua": [
+    { "id": "QIAN", "symbol": "乾", "name": "乾卦", "element": "金灵根·天行", "color": "#f3dc91", "world": "云层环形开启，主楼钟鸣。", "hook": "登阶问天" },
+    { "id": "KUN", "symbol": "坤", "name": "坤卦", "element": "土灵根·厚载", "color": "#d2a96f", "world": "石缝生长灵植，界种苏醒。", "hook": "培育界种" },
+    { "id": "ZHEN", "symbol": "震", "name": "震卦", "element": "雷灵根·初动", "color": "#8c8dff", "world": "晶石共振，主楼锁链晚响一拍。", "hook": "惊醒门后之物", "default": true },
+    { "id": "XUN", "symbol": "巽", "name": "巽卦", "element": "风木灵根·入微", "color": "#8dd6b1", "world": "叶片逆风，一封密信飞向茶室。", "hook": "茶室密信" },
+    { "id": "KAN", "symbol": "坎", "name": "坎卦", "element": "水灵根·临渊", "color": "#65b8e8", "world": "悬浮水珠汇聚，池底水门显形。", "hook": "池下遗迹" },
+    { "id": "LI", "symbol": "离", "name": "离卦", "element": "火灵根·照明", "color": "#f08a5b", "world": "池水不沸而燃，照出一道人影。", "hook": "火照真形" },
+    { "id": "GEN", "symbol": "艮", "name": "艮卦", "element": "土灵根·止岳", "color": "#b7aa86", "world": "风与瀑布声短暂停止，裂缝闭合。", "hook": "封印守关" },
+    { "id": "DUI", "symbol": "兑", "name": "兑卦", "element": "泽金灵根·悦泽", "color": "#efb5d1", "world": "花雨与铃音落下，灵兽主动靠近。", "hook": "甜言试炼" }
+  ]
+}

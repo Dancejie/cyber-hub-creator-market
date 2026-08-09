@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Runtime Placeholder</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: radial-gradient(circle at 50% 20%, #241a3d, #0b0b10 70%);
+        color: #f7f7fb;
+        font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+      .stage {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 24px;
+        text-align: center;
+      }
+      .badge {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #a7a7b4;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+        padding: 4px 12px;
+      }
+      h1 {
+        font-size: 28px;
+        margin: 0;
+        max-width: 480px;
+      }
+      p.hint {
+        max-width: 420px;
+        color: #a7a7b4;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0;
+      }
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      button {
+        appearance: none;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 13px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      button.primary {
+        background: #8b5cf6;
+        color: white;
+      }
+      button.ghost {
+        background: rgba(255, 255, 255, 0.08);
+        color: #f7f7fb;
+      }
+      button.danger {
+        background: rgba(251, 113, 133, 0.15);
+        color: #fb7185;
+      }
+      #status {
+        font-size: 12px;
+        color: #34d399;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <span class="badge">Placeholder Runtime</span>
+      <h1 id="title">正在加载世界…</h1>
+      <p class="hint">
+        这是一个遵循 World Hub Runtime postMessage
+        协议的占位体验，用来在队友的真实游戏就绪前打通完整的
+        进入/退出/完成/报错链路。队友的真实构建产物接入后，
+        只需要替换对应 World 的 <code>runtime.src</code>，
+        这个页面就不再需要了。
+      </p>
+      <div class="controls">
+        <button class="primary" id="btn-complete">模拟完成 (WORLD_COMPLETE)</button>
+        <button class="ghost" id="btn-exit">退出 (WORLD_EXIT)</button>
+        <button class="danger" id="btn-error">模拟报错 (WORLD_ERROR)</button>
+      </div>
+      <p id="status"></p>
+    </div>
+
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const worldId = params.get("world") || "unknown-world";
+        const title = params.get("title") || worldId;
+
+        document.getElementById("title").textContent = title;
+
+        function post(message) {
+          window.parent.postMessage(message, window.location.origin);
+        }
+
+        function setStatus(text) {
+          document.getElementById("status").textContent = text;
+        }
+
+        // 模拟加载耗时，然后通知宿主页面 Runtime 已就绪
+        window.setTimeout(function () {
+          post({ source: "world-runtime", type: "WORLD_READY", worldId: worldId });
+          setStatus("已发送 WORLD_READY");
+        }, 500);
+
+        document.getElementById("btn-complete").addEventListener("click", function () {
+          post({
+            source: "world-runtime",
+            type: "WORLD_COMPLETE",
+            worldId: worldId,
+            payload: { score: Math.floor(Math.random() * 1000) },
+          });
+          setStatus("已发送 WORLD_COMPLETE");
+        });
+
+        document.getElementById("btn-exit").addEventListener("click", function () {
+          post({ source: "world-runtime", type: "WORLD_EXIT", worldId: worldId });
+          setStatus("已发送 WORLD_EXIT");
+        });
+
+        document.getElementById("btn-error").addEventListener("click", function () {
+          post({
+            source: "world-runtime",
+            type: "WORLD_ERROR",
+            worldId: worldId,
+            code: "SIMULATED_ERROR",
+            message: "手动触发的模拟错误",
+          });
+          setStatus("已发送 WORLD_ERROR");
+        });
+      })();
+    </script>
+  </body>
+</html>

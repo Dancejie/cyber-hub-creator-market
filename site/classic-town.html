@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>爪印大学 · 可动 Agent 全场景</title>
+    <style>
+      :root {
+        color: #263831;
+        background: #dce6df;
+        font-family: "PingFang SC", "Hiragino Sans GB", system-ui, sans-serif;
+        --paper: rgba(255, 252, 243, .91);
+        --ink: #263831;
+        --muted: #748078;
+        --sage: #486456;
+        --sage-dark: #284638;
+        --gold: #d7a84d;
+        --clay: #b86742;
+      }
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+      body { background: #dce6df; }
+      button { color: inherit; font: inherit; }
+      .scene-host {
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(circle at 60% 18%, rgba(255,255,255,.7), transparent 34%),
+          #dce6df;
+      }
+      .scene-host canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        outline: 0;
+        touch-action: none;
+      }
+      .interface {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .interface button { pointer-events: auto; }
+      .topbar {
+        position: absolute;
+        top: 22px;
+        left: 24px;
+        right: 24px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand,
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 11px;
+        background: var(--paper);
+        border: 1px solid rgba(66, 77, 69, .13);
+        border-radius: 18px;
+        box-shadow: 0 12px 32px rgba(43, 57, 49, .1);
+        backdrop-filter: blur(16px);
+      }
+      .brand-mark {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        color: #fffdf5;
+        font-family: "Songti SC", serif;
+        font-size: 20px;
+        background: var(--sage-dark);
+        border-radius: 12px;
+      }
+      .brand span,
+      .brand strong { display: block; }
+      .brand span {
+        color: #75847b;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .14em;
+      }
+      .brand strong {
+        margin-top: 3px;
+        font-family: "Songti SC", serif;
+        font-size: 17px;
+        font-weight: 600;
+      }
+      .top-actions button {
+        flex: 0 0 auto;
+        min-height: 38px;
+        padding: 0 13px;
+        background: rgba(255, 253, 247, .78);
+        border: 1px solid rgba(71, 82, 74, .12);
+        border-radius: 12px;
+        cursor: pointer;
+      }
+      .top-actions button:hover { background: #fffdf7; }
+      .top-actions button.is-active {
+        color: #fff;
+        background: var(--sage-dark);
+        border-color: var(--sage-dark);
+      }
+      .top-actions button:disabled {
+        cursor: not-allowed;
+        opacity: .5;
+      }
+      .top-actions button:focus-visible {
+        outline: 3px solid #efc765;
+        outline-offset: 2px;
+      }
+      .intro {
+        position: absolute;
+        top: 96px;
+        left: 24px;
+        width: min(340px, calc(100vw - 48px));
+        padding: 24px;
+        background: var(--paper);
+        border: 1px solid rgba(66, 77, 69, .12);
+        border-radius: 28px;
+        box-shadow: 0 20px 54px rgba(43, 57, 49, .11);
+        backdrop-filter: blur(18px);
+        transition: opacity .35s ease, transform .35s ease;
+      }
+      .eyebrow {
+        margin: 0 0 8px;
+        color: #71847a;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .16em;
+      }
+      .intro h1 {
+        margin: 0;
+        font-family: "Songti SC", "STSong", serif;
+        font-size: clamp(30px, 3vw, 45px);
+        font-weight: 500;
+        line-height: 1.08;
+      }
+      .intro-copy {
+        margin: 13px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.75;
+      }
+      .scene-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .scene-facts li {
+        padding: 6px 8px;
+        color: #607167;
+        font-size: 10px;
+        font-weight: 700;
+        background: rgba(78, 104, 87, .08);
+        border-radius: 999px;
+      }
+      .agent-card {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(72, 91, 79, .12);
+      }
+      .agent-card[hidden] { display: none; }
+      .agent-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .agent-heading span,
+      .agent-heading strong,
+      .agent-heading small { display: block; }
+      .agent-heading span {
+        margin-bottom: 4px;
+        color: #7c887f;
+        font-size: 10px;
+      }
+      .agent-heading strong {
+        font-family: "Songti SC", serif;
+        font-size: 25px;
+        font-weight: 600;
+      }
+      .agent-heading small {
+        margin-top: 5px;
+        color: #79857d;
+        font-size: 11px;
+      }
+      .agent-state {
+        flex: 0 0 auto;
+        padding: 6px 9px;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 750;
+        background: var(--sage);
+        border-radius: 999px;
+      }
+      .agent-line {
+        margin: 0;
+        color: #53645a;
+        font-family: "Songti SC", serif;
+        font-size: 14px;
+        line-height: 1.65;
+      }
+      .agent-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .agent-actions button {
+        min-height: 39px;
+        padding: 7px 9px;
+        color: #526258;
+        background: #fffdf7;
+        border: 1px solid rgba(72, 91, 79, .14);
+        border-radius: 12px;
+        cursor: pointer;
+      }
+      .agent-actions button.primary {
+        color: #fff;
+        background: var(--sage-dark);
+        border-color: var(--sage-dark);
+      }
+      .agent-actions button:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+      }
+      .agent-actions .wide { grid-column: 1 / -1; }
+      .chat-panel {
+        position: absolute;
+        z-index: 8;
+        top: 150px;
+        right: 24px;
+        display: grid;
+        gap: 11px;
+        width: min(342px, calc(100vw - 48px));
+        max-height: calc(100vh - 275px);
+        padding: 16px;
+        overflow: hidden;
+        pointer-events: auto;
+        background: rgba(255, 252, 243, .95);
+        border: 1px solid rgba(66, 77, 69, .14);
+        border-radius: 22px;
+        box-shadow: 0 20px 54px rgba(43, 57, 49, .15);
+        backdrop-filter: blur(18px);
+      }
+      .chat-panel[hidden] { display: none; }
+      .chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .chat-title strong,
+      .chat-title small { display: block; }
+      .chat-title strong {
+        font-family: "Songti SC", serif;
+        font-size: 18px;
+      }
+      .chat-title small {
+        margin-top: 3px;
+        color: #839087;
+        font-size: 9px;
+      }
+      .chat-close {
+        width: 31px;
+        height: 31px;
+        color: #66766c;
+        background: rgba(72, 91, 79, .07);
+        border: 0;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .chat-feed {
+        display: grid;
+        gap: 8px;
+        min-height: 118px;
+        max-height: 220px;
+        padding: 4px 3px 4px 0;
+        overflow-y: auto;
+      }
+      .chat-message {
+        width: fit-content;
+        max-width: 88%;
+        margin: 0;
+        padding: 9px 11px;
+        font-size: 11px;
+        line-height: 1.55;
+        border-radius: 14px;
+      }
+      .chat-message.agent {
+        color: #3f5148;
+        background: #edf1e8;
+        border-bottom-left-radius: 4px;
+      }
+      .chat-message.player {
+        justify-self: end;
+        color: #fff;
+        background: var(--sage-dark);
+        border-bottom-right-radius: 4px;
+      }
+      .chat-presets {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .chat-presets::-webkit-scrollbar { display: none; }
+      .chat-presets button {
+        flex: 0 0 auto;
+        min-height: 30px;
+        padding: 0 9px;
+        color: #607066;
+        font-size: 9px;
+        background: rgba(255, 253, 247, .9);
+        border: 1px solid rgba(72, 91, 79, .14);
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .chat-form {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 7px;
+      }
+      .chat-form input {
+        min-width: 0;
+        height: 38px;
+        padding: 0 11px;
+        color: var(--ink);
+        font: inherit;
+        font-size: 11px;
+        background: #fffdf7;
+        border: 1px solid rgba(72, 91, 79, .16);
+        border-radius: 11px;
+        outline: 0;
+      }
+      .chat-form input:focus { border-color: #80998a; }
+      .chat-form button {
+        min-width: 58px;
+        color: #fff;
+        background: var(--sage-dark);
+        border: 0;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .dock {
+        position: absolute;
+        left: 50%;
+        bottom: 22px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(138px, 1fr));
+        gap: 9px;
+        width: min(680px, calc(100vw - 48px));
+        padding: 10px;
+        background: var(--paper);
+        border: 1px solid rgba(66, 77, 69, .13);
+        border-radius: 23px;
+        box-shadow: 0 18px 48px rgba(43, 57, 49, .13);
+        transform: translateX(-50%);
+        backdrop-filter: blur(18px);
+      }
+      .character-button {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+        min-height: 54px;
+        padding: 7px 10px;
+        text-align: left;
+        background: rgba(255, 253, 247, .78);
+        border: 1px solid transparent;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      }
+      .character-button:hover { transform: translateY(-2px); }
+      .character-button.is-selected {
+        background: #edf3ea;
+        border-color: #9fb5a5;
+      }
+      .character-icon {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        font-size: 20px;
+        background: #f0eadc;
+        border-radius: 12px;
+      }
+      .character-button strong,
+      .character-button small { display: block; }
+      .character-button strong {
+        overflow: hidden;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .character-button small {
+        margin-top: 4px;
+        overflow: hidden;
+        color: #879188;
+        font-size: 9px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .dpad {
+        position: absolute;
+        right: 24px;
+        bottom: 24px;
+        display: grid;
+        grid-template-columns: repeat(3, 42px);
+        grid-template-rows: repeat(3, 42px);
+        gap: 4px;
+        padding: 10px;
+        opacity: .38;
+        background: var(--paper);
+        border: 1px solid rgba(66, 77, 69, .13);
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(43, 57, 49, .12);
+        transition: opacity .2s ease;
+        backdrop-filter: blur(16px);
+      }
+      .dpad.is-enabled { opacity: 1; }
+      .dpad button {
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--sage-dark);
+        border: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        touch-action: none;
+      }
+      .dpad button:disabled { opacity: .34; cursor: not-allowed; }
+      .dpad [data-move="up"] { grid-column: 2; grid-row: 1; }
+      .dpad [data-move="left"] { grid-column: 1; grid-row: 2; }
+      .dpad [data-move="center"] { grid-column: 2; grid-row: 2; background: #d6c7a5; }
+      .dpad [data-move="right"] { grid-column: 3; grid-row: 2; }
+      .dpad [data-move="down"] { grid-column: 2; grid-row: 3; }
+      .name-tags {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .name-tag {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 9px;
+        color: #52635a;
+        font-size: 10px;
+        font-weight: 750;
+        white-space: nowrap;
+        background: rgba(255, 253, 247, .9);
+        border: 1px solid rgba(72, 91, 79, .13);
+        border-radius: 999px;
+        box-shadow: 0 7px 22px rgba(43, 57, 49, .1);
+        transform: translate(-50%, -50%);
+      }
+      .name-tag[hidden] { display: none; }
+      .name-tag::before {
+        width: 7px;
+        height: 7px;
+        content: "";
+        background: #8ca094;
+        border-radius: 50%;
+      }
+      .name-tag.is-selected {
+        color: #fff;
+        background: var(--sage-dark);
+        border-color: var(--sage-dark);
+      }
+      .name-tag.is-selected::before { background: #f1cb70; }
+      .scene-hint {
+        position: absolute;
+        right: 24px;
+        top: 87px;
+        max-width: 250px;
+        padding: 10px 13px;
+        color: #6f7c74;
+        font-size: 10px;
+        line-height: 1.55;
+        background: rgba(255, 253, 247, .78);
+        border: 1px solid rgba(66, 77, 69, .12);
+        border-radius: 14px;
+        backdrop-filter: blur(12px);
+      }
+      .loading,
+      .fatal {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(230, 233, 223, .93);
+        backdrop-filter: blur(14px);
+      }
+      .loading[hidden],
+      .fatal[hidden] { display: none; }
+      .loading-card,
+      .fatal-card {
+        width: min(430px, 100%);
+        padding: 28px;
+        text-align: center;
+        background: #fffaf0;
+        border: 1px solid rgba(70, 87, 76, .14);
+        border-radius: 26px;
+        box-shadow: 0 30px 80px rgba(43, 57, 49, .15);
+      }
+      .loading-paw {
+        display: grid;
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 15px;
+        place-items: center;
+        color: #fff;
+        font-family: "Songti SC", serif;
+        font-size: 27px;
+        background: var(--sage-dark);
+        border-radius: 19px;
+        animation: breathe 1.4s ease-in-out infinite;
+      }
+      .loading-card strong,
+      .loading-card small { display: block; }
+      .loading-card strong {
+        font-family: "Songti SC", serif;
+        font-size: 24px;
+      }
+      .loading-card small {
+        margin-top: 7px;
+        color: #79847d;
+        font-size: 11px;
+      }
+      .loading-bar {
+        height: 4px;
+        margin-top: 18px;
+        overflow: hidden;
+        background: #e8dfca;
+        border-radius: 999px;
+      }
+      .loading-bar i {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--sage), var(--gold));
+        border-radius: inherit;
+        transform: scaleX(.04);
+        transform-origin: left;
+        transition: transform .25s ease;
+      }
+      .fatal-card h2 {
+        margin: 0;
+        font-family: "Songti SC", serif;
+        font-size: 30px;
+      }
+      .fatal-card p {
+        margin: 12px 0 0;
+        color: #7a655d;
+        line-height: 1.7;
+      }
+      .toast {
+        position: absolute;
+        top: 92px;
+        left: 50%;
+        z-index: 7;
+        max-width: min(420px, calc(100vw - 40px));
+        padding: 10px 14px;
+        color: #fff;
+        font-size: 11px;
+        line-height: 1.5;
+        text-align: center;
+        background: rgba(39, 68, 54, .92);
+        border-radius: 999px;
+        box-shadow: 0 10px 28px rgba(31, 52, 42, .18);
+        transform: translate(-50%, -12px);
+        opacity: 0;
+        transition: opacity .22s, transform .22s;
+      }
+      .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+      .rhythm-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        overflow: hidden;
+        visibility: hidden;
+        pointer-events: none;
+        contain: layout paint;
+        opacity: 0;
+        transition: opacity .42s ease, visibility .42s;
+      }
+      .rhythm-overlay::before {
+        position: absolute;
+        inset: 8% 18% 12%;
+        background:
+          radial-gradient(circle at 50% 46%, rgba(255, 224, 143, .22), transparent 24%),
+          radial-gradient(circle at 50% 48%, rgba(179, 210, 192, .16), transparent 48%);
+        content: "";
+        opacity: .5;
+      }
+      .rhythm-overlay.is-active {
+        visibility: visible;
+        opacity: 1;
+      }
+      .rhythm-overlay.is-face::before {
+        opacity: 1;
+      }
+      .rhythm-combo {
+        position: absolute;
+        top: clamp(100px, 15vh, 150px);
+        right: clamp(22px, 5vw, 82px);
+        display: grid;
+        justify-items: end;
+        color: rgba(255, 253, 244, .9);
+        text-shadow: 0 2px 12px rgba(38, 56, 49, .46);
+      }
+      .rhythm-combo b {
+        font-family: "Songti SC", serif;
+        font-size: clamp(32px, 5vw, 68px);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        line-height: .88;
+      }
+      .rhythm-combo span {
+        margin-top: 7px;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: .28em;
+      }
+      .rhythm-tracks {
+        position: absolute;
+        top: clamp(92px, 13vh, 140px);
+        right: 4vw;
+        bottom: clamp(108px, 15vh, 154px);
+        left: 4vw;
+        display: grid;
+        grid-template-columns:
+          minmax(42px, 72px)
+          minmax(42px, 72px)
+          minmax(170px, 1fr)
+          minmax(42px, 72px)
+          minmax(42px, 72px);
+        gap: clamp(6px, 1vw, 13px);
+      }
+      .rhythm-lane {
+        --lane-color: 239, 198, 106;
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        contain: layout paint;
+        background:
+          linear-gradient(180deg, rgba(var(--lane-color), 0), rgba(var(--lane-color), .08) 58%, rgba(var(--lane-color), .2));
+        border-right: 1px solid rgba(var(--lane-color), .2);
+        border-left: 1px solid rgba(var(--lane-color), .2);
+        border-radius: 999px 999px 18px 18px;
+        box-shadow: inset 0 -22px 34px rgba(var(--lane-color), .09);
+        -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000);
+        mask-image: linear-gradient(180deg, transparent, #000 14%, #000);
+      }
+      .rhythm-lane:nth-child(1) { --lane-color: 173, 208, 190; }
+      .rhythm-lane:nth-child(2) { --lane-color: 239, 198, 106; }
+      .rhythm-lane:nth-child(4) { --lane-color: 225, 157, 137; }
+      .rhythm-lane:nth-child(5) { --lane-color: 190, 171, 222; }
+      .rhythm-lane::after {
+        position: absolute;
+        right: 5px;
+        bottom: 44px;
+        left: 5px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(var(--lane-color), .95), transparent);
+        box-shadow: 0 0 15px rgba(var(--lane-color), .8);
+        content: "";
+      }
+      .rhythm-note-host {
+        position: absolute;
+        inset: 0 0 48px;
+      }
+      .rhythm-note {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        display: grid;
+        width: clamp(30px, 3.8vw, 47px);
+        height: clamp(24px, 2.8vw, 34px);
+        place-items: center;
+        color: #fffef7;
+        font-size: clamp(11px, 1.3vw, 16px);
+        font-style: normal;
+        font-weight: 900;
+        background:
+          linear-gradient(145deg, rgba(255,255,255,.72), rgba(var(--lane-color), .8));
+        border: 1px solid rgba(255, 255, 255, .82);
+        border-radius: 11px;
+        box-shadow:
+          0 0 18px rgba(var(--lane-color), .55),
+          0 7px 16px rgba(41, 55, 48, .2);
+        transform: translate3d(-50%, -38px, 0) rotate(45deg) scale(.86);
+        visibility: hidden;
+        opacity: 0;
+        will-change: opacity, transform;
+      }
+      .rhythm-note.is-active { visibility: visible; }
+      .rhythm-note b {
+        font: inherit;
+        transform: rotate(-45deg);
+      }
+      .rhythm-lane > i {
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        display: grid;
+        width: 38px;
+        height: 34px;
+        place-items: center;
+        color: rgba(255, 254, 246, .94);
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 900;
+        background: rgba(37, 62, 49, .48);
+        border: 1px solid rgba(var(--lane-color), .62);
+        border-radius: 11px;
+        box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
+        transform: translateX(-50%);
+      }
+      .rhythm-face-safe {
+        position: relative;
+        grid-column: 3;
+      }
+      .rhythm-face-safe::after {
+        position: absolute;
+        top: 12%;
+        right: 8%;
+        bottom: 16%;
+        left: 8%;
+        border: 1px solid rgba(255, 226, 151, .12);
+        border-radius: 50%;
+        box-shadow: 0 0 50px rgba(255, 218, 127, .08);
+        content: "";
+      }
+      .rhythm-judgement {
+        position: absolute;
+        top: 62%;
+        left: 50%;
+        z-index: 2;
+        display: grid;
+        justify-items: center;
+        color: #ffe58d;
+        text-shadow:
+          0 0 9px rgba(255, 222, 125, .9),
+          0 3px 18px rgba(72, 58, 34, .42);
+        transform: translate(-50%, -50%) scale(.72);
+        opacity: 0;
+      }
+      .rhythm-judgement strong {
+        font-family: "Songti SC", serif;
+        font-size: clamp(28px, 5.2vw, 70px);
+        font-weight: 600;
+        letter-spacing: .08em;
+      }
+      .rhythm-judgement small {
+        margin-top: 3px;
+        color: rgba(255, 253, 240, .88);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .3em;
+      }
+      .rhythm-flare {
+        position: absolute;
+        top: 58%;
+        left: 50%;
+        width: min(42vw, 520px);
+        aspect-ratio: 1;
+        background:
+          radial-gradient(circle, rgba(255, 229, 145, .34) 0 5%, rgba(255, 219, 118, .13) 22%, transparent 62%);
+        border: 1px solid rgba(255, 225, 139, .28);
+        border-radius: 50%;
+        box-shadow:
+          0 0 36px rgba(255, 221, 129, .18),
+          0 0 78px rgba(255, 221, 129, .1) inset;
+        transform: translate3d(-50%, -50%, 0) scale(.35) rotate(0);
+        opacity: 0;
+        will-change: opacity, transform;
+      }
+      body.rhythm-mode .intro {
+        transform: translateX(-20px);
+        opacity: 0;
+      }
+      body.rhythm-mode .intro button { pointer-events: none; }
+      @keyframes breathe {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-4px) scale(1.04); }
+      }
+      @media (max-width: 1180px) {
+        .dock {
+          left: 24px;
+          width: min(620px, calc(100vw - 226px));
+          transform: none;
+        }
+        .character-button { grid-template-columns: 31px 1fr; }
+        .character-icon { width: 31px; height: 31px; }
+      }
+      @media (max-width: 760px) {
+        .topbar { top: 12px; left: 12px; right: 12px; }
+        .brand { padding: 7px; border-radius: 15px; }
+        .brand-mark { width: 33px; height: 33px; }
+        .brand span { display: none; }
+        .brand strong { margin: 0; font-size: 14px; }
+        .top-actions {
+          max-width: calc(100vw - 150px);
+          gap: 5px;
+          padding: 6px;
+          overflow-x: auto;
+          border-radius: 15px;
+          scrollbar-width: none;
+        }
+        .top-actions::-webkit-scrollbar { display: none; }
+        .top-actions button { min-height: 33px; padding-inline: 9px; font-size: 10px; }
+        .intro {
+          top: 65px;
+          left: 12px;
+          width: min(292px, calc(100vw - 24px));
+          padding: 17px;
+          border-radius: 21px;
+        }
+        .intro h1 { font-size: 27px; }
+        .intro-copy { display: none; }
+        .scene-facts { margin-top: 10px; }
+        .scene-facts li:nth-child(3) { display: none; }
+        .agent-card { gap: 8px; margin-top: 10px; padding-top: 10px; }
+        .agent-heading strong { font-size: 20px; }
+        .agent-line { display: none; }
+        .agent-actions button { min-height: 35px; font-size: 11px; }
+        .chat-panel {
+          top: auto;
+          right: 10px;
+          bottom: 82px;
+          left: 10px;
+          width: auto;
+          max-height: 330px;
+          padding: 13px;
+          border-radius: 19px;
+        }
+        .chat-feed { min-height: 86px; max-height: 145px; }
+        .scene-hint { display: none; }
+        .dock {
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          display: flex;
+          width: auto;
+          padding: 7px;
+          overflow-x: auto;
+          border-radius: 19px;
+          transform: none;
+          scrollbar-width: none;
+        }
+        .dock::-webkit-scrollbar { display: none; }
+        .character-button { flex: 0 0 132px; min-height: 48px; padding: 5px 8px; }
+        .dpad { right: 12px; bottom: 84px; transform: scale(.86); transform-origin: right bottom; }
+        .toast { top: auto; bottom: 148px; }
+        .rhythm-tracks {
+          top: 92px;
+          right: 12px;
+          bottom: 112px;
+          left: 12px;
+          grid-template-columns: 38px 38px minmax(26vw, 1fr) 38px 38px;
+          gap: 5px;
+        }
+        .rhythm-combo { top: 82px; right: 16px; }
+        .rhythm-lane > i { width: 31px; height: 30px; }
+        .rhythm-judgement { top: 65%; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          animation-duration: .01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: .01ms !important;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/classicTown-ZN7A1mJu.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  </head>
+  <body>
+    <div id="scene" class="scene-host" aria-label="爪印大学钟楼广场 3D 全场景"></div>
+
+    <main class="interface">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">爪</span>
+          <div>
+            <span>PAWPRINT UNIVERSITY</span>
+            <strong>钟楼广场 · Agent Field</strong>
+          </div>
+        </div>
+        <div class="top-actions" aria-label="场景控制">
+          <button id="bell-button" type="button">敲钟</button>
+          <button id="disco-button" type="button">庆典灯</button>
+          <button id="music-button" type="button" aria-pressed="true">舞曲 · 自动</button>
+          <button id="group-dance-button" type="button" aria-label="让所有居民同时进入舞池跳舞" aria-pressed="false" disabled>一起跳</button>
+          <button id="overview-button" type="button">回到全景</button>
+        </div>
+      </header>
+
+      <section class="intro" aria-live="polite">
+        <p class="eyebrow">FULL 3D TOWN · LIVE RESIDENTS</p>
+        <h1>今天谁在广场<br />偷偷乱逛？</h1>
+        <p class="intro-copy">
+          建筑已经真正落进场景。居民会自己决定去哪儿，也可以由你接管。
+        </p>
+        <ul class="scene-facts" aria-label="场景信息">
+          <li>4 类 PBR 建筑</li>
+          <li>3 位巡游居民 + 3 个骨骼舞台完全体</li>
+          <li>DeepSeek 人格接口</li>
+        </ul>
+
+        <article id="agent-card" class="agent-card" hidden>
+          <div class="agent-heading">
+            <div>
+              <span id="agent-role">广场居民</span>
+              <strong id="agent-name">山羊认真发言</strong>
+              <small id="agent-motion">正在自主巡游</small>
+            </div>
+            <em id="agent-state" class="agent-state">自主</em>
+          </div>
+          <p id="agent-line" class="agent-line">“我只是路过，但意见已经准备好了。”</p>
+          <div class="agent-actions">
+            <button id="control-button" class="primary" type="button">接管 Agent</button>
+            <button id="action-button" type="button">去跳招牌舞</button>
+            <button id="follow-button" type="button">第三人称</button>
+            <button id="release-button" type="button">自由巡游</button>
+            <button id="chat-button" class="wide" type="button">问它一句 · 人格对话</button>
+          </div>
+        </article>
+      </section>
+
+      <aside id="chat-panel" class="chat-panel" aria-label="Agent 人格对话" hidden>
+        <div class="chat-header">
+          <div class="chat-title">
+            <strong id="chat-name">山羊认真发言</strong>
+            <small id="chat-mode">本地人格 · 可选 DeepSeek 同源代理</small>
+          </div>
+          <button id="chat-close" class="chat-close" type="button" aria-label="关闭对话">×</button>
+        </div>
+        <div id="chat-feed" class="chat-feed" aria-live="polite"></div>
+        <div id="chat-presets" class="chat-presets" aria-label="快捷问题"></div>
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" maxlength="80" autocomplete="off" placeholder="问问它现在在想什么…" />
+          <button id="chat-send" type="submit">发送</button>
+        </form>
+      </aside>
+
+      <div id="name-tags" class="name-tags" aria-hidden="true"></div>
+      <div class="scene-hint">拖拽旋转 · 滚轮缩放 · 点击居民或地面<br />接管后第三人称 WASD · Shift 加速</div>
+      <div id="toast" class="toast" role="status"></div>
+
+      <section id="rhythm-overlay" class="rhythm-overlay" aria-hidden="true">
+        <div class="rhythm-combo">
+          <b id="rhythm-combo-value">00</b>
+          <span>COMBO</span>
+        </div>
+        <div id="rhythm-judgement" class="rhythm-judgement">
+          <strong>PERFECT</strong>
+          <small>完美节拍</small>
+        </div>
+        <div id="rhythm-flare" class="rhythm-flare"></div>
+        <div id="rhythm-tracks" class="rhythm-tracks">
+          <div class="rhythm-lane" data-rhythm-lane="0">
+            <div class="rhythm-note-host"></div><i>D</i>
+          </div>
+          <div class="rhythm-lane" data-rhythm-lane="1">
+            <div class="rhythm-note-host"></div><i>F</i>
+          </div>
+          <div class="rhythm-face-safe" aria-hidden="true"></div>
+          <div class="rhythm-lane" data-rhythm-lane="2">
+            <div class="rhythm-note-host"></div><i>3</i>
+          </div>
+          <div class="rhythm-lane" data-rhythm-lane="3">
+            <div class="rhythm-note-host"></div><i>4</i>
+          </div>
+        </div>
+      </section>
+
+      <nav class="dock" aria-label="选择居民">
+        <button class="character-button" type="button" data-character="dog">
+          <span class="character-icon" aria-hidden="true">🐕</span>
+          <span><strong>眯眼哼唱犬</strong><small>玩偶式蹦跳巡游</small></span>
+        </button>
+        <button class="character-button" type="button" data-character="goat">
+          <span class="character-icon" aria-hidden="true">🐐</span>
+          <span><strong>认真发言羊</strong><small>慢速自主巡游</small></span>
+        </button>
+        <button class="character-button" type="button" data-character="masked">
+          <span class="character-icon" aria-hidden="true">🥷</span>
+          <span><strong>蒙面门房</strong><small>值守中 · 可完整变身登台</small></span>
+        </button>
+        <button class="character-button" type="button" data-character="cat">
+          <span class="character-icon" aria-hidden="true">🐈</span>
+          <span><strong>脸红小橘</strong><small>小步蹦跳巡游</small></span>
+        </button>
+      </nav>
+
+      <div id="dpad" class="dpad" aria-label="移动选中的居民">
+        <button type="button" data-move="up" aria-label="向前">↑</button>
+        <button type="button" data-move="left" aria-label="向左">←</button>
+        <button type="button" data-move="center" aria-label="停止" disabled>●</button>
+        <button type="button" data-move="right" aria-label="向右">→</button>
+        <button type="button" data-move="down" aria-label="向后">↓</button>
+      </div>
+    </main>
+
+    <div id="loading" class="loading">
+      <div class="loading-card">
+        <span class="loading-paw" aria-hidden="true">爪</span>
+        <strong>正在打开整座小镇</strong>
+        <small id="loading-copy">先铺广场，再把居民请进来 · 0 / 11</small>
+        <div class="loading-bar"><i id="loading-progress"></i></div>
+      </div>
+    </div>
+
+    <div id="fatal" class="fatal" hidden>
+      <div class="fatal-card">
+        <h2>这次没能打开小镇</h2>
+        <p id="fatal-copy">请在最新版 Chrome 或 Safari 中重新打开。</p>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#f4cf36" />
+    <meta name="description" content="一场由马挥鞭驱赶人拉马车、托马斯小火车、普通办公椅、轮椅和弹簧火箭鹿参加的荒唐电影化竞速。" />
+    <title>ODD PRIX · 荒唐杯</title>
+    <link rel="stylesheet" href="/world-runtime/f1-racing/assets/style.css?v=20260731-racing-hud-2" />
+  </head>
+  <body>
+    <main id="game-shell">
+      <div id="game" aria-label="荒唐杯 3D 赛车游戏"></div>
+
+      <section class="entry-film" id="entry-film" hidden aria-hidden="true">
+        <video
+          id="entry-film-video"
+          src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abcoitga06h8kav0270000000000pukhiok.mp4"
+          preload="auto"
+          playsinline
+          muted
+        ></video>
+        <div class="entry-film-shade"></div>
+        <button class="entry-film-skip" id="entry-film-skip" type="button" aria-label="跳过开场动画">
+          <span>跳过</span>
+          <small>SKIP INTRO</small>
+        </button>
+      </section>
+      <audio
+        id="race-bgm"
+        src="https://fe-video-qc.xhscdn.com/fe-platform-file/104101b8323abd4707a06h8kav0270000000000urrup9g.mp3"
+        preload="auto"
+        autoplay
+        loop
+      ></audio>
+
+      <div class="letterbox letterbox-top"></div>
+      <div class="letterbox letterbox-bottom"></div>
+
+      <header class="hud" id="hud" aria-live="polite">
+        <div class="hud-block hud-rank">
+          <span class="eyebrow">POSITION</span>
+          <strong><span id="rank">1</span><small>/ 6</small></strong>
+        </div>
+        <div class="hud-center">
+          <div class="lap-pill"><span id="lap">1</span> / 1 圈</div>
+          <div class="chaos-wrap">
+            <div class="chaos-label"><span>荒唐值</span><b id="chaos-label">冷静得可疑</b></div>
+            <div class="chaos-track"><i id="chaos-fill"></i></div>
+          </div>
+        </div>
+        <div class="hud-block hud-time">
+          <span class="eyebrow">RACE TIME</span>
+          <strong id="timer">00:00.000</strong>
+        </div>
+      </header>
+
+      <section class="race-instruments" id="race-instruments" aria-label="比赛速度与赛道进度">
+        <div class="track-progress-card">
+          <div class="instrument-label"><span>COURSE</span><b>LIVE POSITION</b></div>
+          <svg class="track-map" id="track-map" viewBox="0 0 220 112" role="img" aria-label="赛道进度图">
+            <path id="track-map-base" class="track-map-base" pathLength="1"></path>
+            <path id="track-map-progress" class="track-map-progress" pathLength="1"></path>
+            <circle id="track-map-player" class="track-map-player" r="4.5"></circle>
+          </svg>
+          <div class="track-progress-meta">
+            <span>RACE PROGRESS</span>
+            <strong id="track-progress-percent">0%</strong>
+          </div>
+          <div class="track-progress-rail"><i id="track-progress-fill"></i></div>
+        </div>
+
+        <div class="speedometer" id="speedometer">
+          <div class="speed-dial" id="speed-dial">
+            <span class="speed-label">VELOCITY</span>
+            <div class="speed-number"><strong id="speed">000</strong><span>km/h</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="race-feed" id="race-feed" aria-live="polite">
+        <span class="feed-dot"></span>
+        <p id="feed-text">赛道安全检查：没有一辆车通过。</p>
+      </section>
+
+      <div class="countdown" id="countdown"></div>
+      <div class="toast" id="toast" aria-live="assertive"></div>
+
+      <section class="start-screen" id="start-screen" hidden aria-hidden="true">
+        <div class="start-grain"></div>
+        <div class="start-copy">
+          <div class="kicker">PAWVERSE PRESENTS / VELOCITY-02</div>
+          <h1><span>ODD</span><span>PRIX</span></h1>
+          <p class="cn-title">荒唐杯 · 怪东西大奖赛</p>
+          <p class="lede">“约 45 秒自动跑成一支 F1 航拍赛车 MV；按下方向键，随时接管。”</p>
+          <div class="entrant-ticker" aria-label="参赛车手">
+            <span>马老板的人力马车</span><i>VS</i><span>托马斯小火车</span><i>VS</i><span>普通办公椅</span><i>VS</i><span>普通轮椅</span><i>VS</i><span>火箭鹿</span>
+          </div>
+          <button id="start-button" class="primary-button">
+            <span>开始播放</span>
+            <small>45S CINEMATIC AUTO RACE · TAKE OVER ANYTIME</small>
+          </button>
+          <div class="controls-hint">
+            <span><kbd>AUTO</kbd> 默认自动驾驶</span>
+            <span><kbd>W</kbd><kbd>↑</kbd> 随时接管</span>
+            <span><kbd>A</kbd><kbd>D</kbd> 转向</span>
+            <span><kbd>SPACE</kbd> 漂移</span>
+            <span><kbd>E</kbd> 甩鞭加速</span>
+          </div>
+          <p class="model-credits">
+            3D：Office Chair / Quaternius（CC0）；Wheelchair / Poly by Google、Attempt at thomas / de cNile（CC BY 3.0）
+          </p>
+        </div>
+        <aside class="start-card">
+          <div class="live-tag"><i></i> LIVE FROM 胡闹环道</div>
+          <div class="driver-portrait" aria-hidden="true">
+            <span class="portrait-head"></span>
+            <span class="portrait-body"></span>
+            <span class="portrait-whip"></span>
+          </div>
+          <p>你的载具</p>
+          <h2>马老板的人力马车<br />MK.倒反天罡</h2>
+          <dl>
+            <div><dt>极速</dt><dd>看拉车人心情</dd></div>
+            <div><dt>车夫</dt><dd>一匹马</dd></div>
+            <div><dt>动力</dt><dd>一位人</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="result-screen" id="result-screen" hidden>
+        <div class="result-copy">
+          <span class="result-kicker">OFFICIAL-ish RESULT</span>
+          <div class="result-rank"><b id="result-rank">1</b><small>ST</small></div>
+          <h2 id="result-title">你把常识甩在了身后</h2>
+          <p id="result-subtitle">赛委会正在讨论人拉车算不算机动车。</p>
+          <div class="result-stats">
+            <div><span>完赛时间</span><strong id="result-time">00:00.000</strong></div>
+            <div><span>最高荒唐值</span><strong id="result-chaos">0%</strong></div>
+            <div><span>最佳武器</span><strong>赛马鞭</strong></div>
+          </div>
+          <button id="restart-button" class="primary-button">
+            <span>再疯一圈</span>
+            <small>RACE AGAIN</small>
+          </button>
+        </div>
+      </section>
+
+      <button class="sound-button" id="sound-button" aria-label="切换声音">SOUND ON</button>
+      <div class="control-mode" id="control-mode" aria-live="polite">
+        <strong id="control-mode-title">AUTO DIRECTOR</strong>
+        <span id="control-mode-copy">自动驾驶 · 8 机位 · 128 BPM</span>
+      </div>
+    </main>
+    <script type="module" src="/world-runtime/f1-racing/assets/game.js?v=20260731-racing-hud-2"></script>
+  </body>
+</html>

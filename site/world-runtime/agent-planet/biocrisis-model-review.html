@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BIOCRISIS · Character Review</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #080a09; }
+      canvas { width: 100%; height: 100%; display: block; }
+      aside {
+        position: fixed;
+        left: 24px;
+        top: 24px;
+        padding: 12px 14px;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 10px;
+        color: #eeeadd;
+        background: rgba(8,11,10,.76);
+        font: 11px/1.5 Inter, system-ui, sans-serif;
+        letter-spacing: .08em;
+        backdrop-filter: blur(12px);
+      }
+      aside span { color: #a9bca3; }
+    </style>
+    <script type="module" crossorigin src="/world-runtime/agent-planet/assets/biocrisisModelReview-D7C_n9Ut.js"></script>
+    <link rel="modulepreload" crossorigin href="/world-runtime/agent-planet/assets/GLTFLoader-bQKC3__A.js">
+  </head>
+  <body>
+    <canvas id="review"></canvas>
+    <aside>TRIPO RIG REVIEW<br /><span>preset:biped:walk</span></aside>
+  </body>
+</html>

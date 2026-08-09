@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>玄墟八象问命 · 剧情交互世界</title>
+  <style>
+    :root { color-scheme: light; --ink: #173b4f; --jade: #2d8f92; --gold: #b8873b; --glass: #f8fdfff0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #dceeff; font-family: ui-serif, "Songti SC", "STSong", system-ui, sans-serif; }
+    canvas { display: block; touch-action: none; cursor: grab; }
+    canvas:active { cursor: grabbing; }
+    button, input { font: inherit; }
+    button { appearance: none; border: 1px solid #c4dde2; color: var(--ink); background: #fff; cursor: pointer; }
+    button:hover { border-color: #62a9ae; background: #effdff; }
+    button:focus-visible, input:focus-visible { outline: 2px solid #68b7c2; outline-offset: 2px; }
+
+    #hud { position: fixed; z-index: 12; top: 18px; left: 18px; width: min(356px, calc(100vw - 36px)); padding: 16px 17px 15px; border: 1px solid #fff; border-radius: 16px; color: var(--ink); background: linear-gradient(145deg, #ffffffed, #effbffe0); box-shadow: 0 16px 45px #476d8120; backdrop-filter: blur(15px); transition: transform .25s ease, opacity .25s ease; user-select: none; }
+    #hud.collapsed { transform: translateY(calc(-100% - 30px)); opacity: .1; }
+    .eyebrow { color: #4a7b88; font: 700 10px/1.2 system-ui; letter-spacing: .22em; text-transform: uppercase; }
+    h1 { margin: 5px 0 12px; font-size: 20px; font-weight: 700; letter-spacing: .05em; }
+    .state-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .value-pill { min-width: 0; padding: 7px 9px; border: 1px solid #cfe3e9; border-radius: 10px; background: #ffffffa8; }
+    .value-pill.story { grid-column: 1 / -1; }
+    .value-pill.manual { border-color: #cf9c4d; background: #fff8e9d9; }
+    .value-pill.active { border-color: #72bbc3; background: #e9fcffe0; }
+    .value-pill span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .value-label { margin-bottom: 2px; color: #77919b; font: 600 9px/1.2 system-ui; letter-spacing: .08em; }
+    .value { font: 650 12px/1.25 system-ui; }
+    .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 11px; }
+    .control { padding: 7px 5px; border-radius: 9px; background: #eaf5f7a8; text-align: center; color: #4c6b76; font: 600 10px/1.35 system-ui; }
+    .control b { color: #204d5f; font-size: 11px; }
+    .action-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+    .action-row button { padding: 8px 3px; border-radius: 9px; font: 650 9px system-ui; }
+
+    #title-screen { position: fixed; z-index: 40; inset: 0; display: grid; place-items: center; padding: 24px; background: linear-gradient(#0e30497d, #cce5f11f), radial-gradient(circle at 50% 40%, #ffffff38, #173b4f8c); backdrop-filter: blur(5px); transition: opacity .7s ease, visibility .7s ease; }
+    #title-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .title-card { width: min(590px, 100%); padding: 42px 38px 34px; border: 1px solid #fff9; border-radius: 26px; text-align: center; color: #163c50; background: linear-gradient(145deg, #ffffffed, #eaf8fbe8); box-shadow: 0 30px 100px #08233370; }
+    .title-seal { width: 54px; height: 54px; margin: 0 auto 14px; display: grid; place-items: center; border: 1px solid #b89252; border-radius: 50%; color: #9a6b29; font-size: 25px; box-shadow: inset 0 0 0 5px #fff8df; }
+    .title-card h2 { margin: 0; font-size: clamp(30px, 6vw, 48px); letter-spacing: .12em; }
+    .title-card p { max-width: 460px; margin: 14px auto 24px; color: #476978; font: 15px/1.75 system-ui; }
+    #enter-world { min-width: 180px; padding: 12px 22px; border-color: #a7cdd3; border-radius: 999px; font: 700 14px system-ui; }
+    #enter-world:disabled { cursor: progress; color: #3e6e7a; background: #e8f5f7; border-color: #8ebdc5; box-shadow: inset 0 0 0 1px #fff, 0 0 24px #9edce34d; opacity: .9; }
+    #auto-countdown { margin-top: 12px; color: #66838d; font: 11px system-ui; }
+    #auto-countdown.error { color: #9b3540; font-weight: 700; line-height: 1.55; }
+
+    #dialogue { position: fixed; z-index: 30; left: 50%; bottom: 24px; width: min(720px, calc(100vw - 32px)); transform: translate(-50%, 24px); padding: 18px 20px 17px; border: 1px solid #fff; border-radius: 18px; color: var(--ink); background: linear-gradient(145deg, #fbfefff5, #eaf7faf2); box-shadow: 0 22px 70px #16394c48; backdrop-filter: blur(18px); opacity: 0; visibility: hidden; transition: opacity .28s ease, transform .28s ease, visibility .28s ease; }
+    #dialogue.visible { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+    .dialogue-meta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 7px; color: #66838d; font: 700 10px system-ui; letter-spacing: .08em; }
+    #dialogue-speaker { color: #9a6b29; font-size: 12px; }
+    #dialogue-text { min-height: 48px; margin: 0; font-size: 17px; line-height: 1.75; letter-spacing: .03em; }
+    .dialogue-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
+    #dialogue-next { padding: 8px 15px; border-radius: 999px; font: 650 11px system-ui; }
+    #choice-list { display: none; grid-template-columns: 1fr; gap: 7px; margin-top: 12px; }
+    #choice-list.visible { display: grid; }
+    #choice-list.gua-grid { grid-template-columns: repeat(4, 1fr); }
+    .choice-button { padding: 10px 12px; border-radius: 10px; text-align: left; font: 650 12px/1.45 system-ui; }
+    .gua-grid .choice-button { text-align: center; }
+    #custom-choice { display: none; grid-template-columns: 1fr auto; gap: 7px; margin-top: 8px; }
+    #custom-choice.visible { display: grid; }
+    #custom-input { min-width: 0; padding: 10px 12px; border: 1px solid #c4dde2; border-radius: 10px; color: var(--ink); background: #fff; }
+    #custom-choice button { padding: 9px 14px; border-radius: 10px; }
+
+    #ritual-panel { position: fixed; z-index: 18; top: 18px; right: 18px; width: min(290px, calc(100vw - 36px)); padding: 14px; border: 1px solid #d6f5ff; border-radius: 15px; color: #dff8ff; background: #0c3454dc; box-shadow: 0 18px 50px #0b274c52; backdrop-filter: blur(12px); opacity: 0; transform: translateY(-12px); visibility: hidden; transition: .28s ease; }
+    #ritual-panel.visible { opacity: 1; transform: none; visibility: visible; }
+    .ritual-title { font-size: 15px; font-weight: 700; letter-spacing: .08em; }
+    #ritual-hint { margin: 6px 0 11px; color: #b9dce9; font: 11px/1.5 system-ui; }
+    .ritual-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .ritual-actions button { padding: 9px 4px; border-color: #9ed6e7; color: #18465f; border-radius: 9px; font: 700 10px system-ui; }
+    .ritual-actions button.expected { background: #fff4bd; border-color: #f0c65b; box-shadow: 0 0 20px #ffe99670; }
+
+    #interaction-prompt { position: fixed; z-index: 17; left: 50%; bottom: 118px; transform: translate(-50%, 12px); padding: 9px 14px; border: 1px solid #ffffffd8; border-radius: 999px; color: #264e5e; background: #f9fefff0; box-shadow: 0 10px 30px #42687b24; font: 650 12px system-ui; opacity: 0; transition: .25s ease; pointer-events: none; }
+    #interaction-prompt.visible { opacity: 1; transform: translate(-50%, 0); }
+    #gua-reveal { position: fixed; z-index: 28; inset: 0; display: grid; place-items: center; color: white; background: radial-gradient(circle, transparent 10%, #102b4673 75%); opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility .45s ease; pointer-events: none; }
+    #gua-reveal.visible { opacity: 1; visibility: visible; }
+    .gua-card { text-align: center; text-shadow: 0 4px 25px #082a46; }
+    #gua-symbol { display: block; font-size: clamp(76px, 14vw, 140px); line-height: 1; }
+    #gua-name { margin-top: 8px; font-size: 25px; letter-spacing: .18em; }
+    #gua-world { max-width: 520px; margin: 10px auto 0; font: 14px/1.6 system-ui; }
+    #world-flash { position: fixed; z-index: 45; inset: 0; background: white; opacity: 0; pointer-events: none; }
+    #world-flash.flash { animation: world-flash .72s ease-out; }
+    @keyframes world-flash { 0% { opacity: 0; } 12% { opacity: .92; } 28% { opacity: .12; } 38% { opacity: .68; } 100% { opacity: 0; } }
+
+    #status { position: fixed; z-index: 14; right: 16px; bottom: 14px; max-width: min(480px, calc(100vw - 32px)); padding: 8px 11px; border-radius: 10px; background: #ffffffe5; color: #4b6c78; font: 11px/1.45 system-ui; white-space: pre-line; box-shadow: 0 8px 25px #476d8118; }
+    #status.error { color: #8a2530; background: #fff5f5f2; }
+    #toast { position: fixed; z-index: 19; left: 50%; bottom: 65px; transform: translate(-50%, 12px); padding: 9px 14px; border: 1px solid #ffffffd8; border-radius: 999px; color: #264e5e; background: #f9fefff0; box-shadow: 0 10px 30px #42687b24; font: 650 12px system-ui; opacity: 0; transition: opacity .25s ease, transform .25s ease; pointer-events: none; }
+    #toast.visible { opacity: 1; transform: translate(-50%, 0); }
+    #reticle { position: fixed; z-index: 11; left: 50%; top: 50%; width: 9px; height: 9px; transform: translate(-50%, -50%); border: 1px solid #527e89aa; border-radius: 50%; opacity: .35; pointer-events: none; transition: .25s ease; }
+    #reticle.flying { width: 20px; height: 20px; border-color: #79cbd9cc; box-shadow: 0 0 20px #8eeaf1; opacity: .8; }
+    #return-universe { position: fixed; z-index: 60; top: 18px; right: 18px; padding: 10px 15px; border: 1px solid #ffffffc7; border-radius: 999px; color: #173b4f; background: #f8fdffdc; box-shadow: 0 10px 32px #173b4f2b; backdrop-filter: blur(14px); font: 650 12px/1 system-ui; }
+    #return-universe:hover { border-color: #91c8d0; background: #fff; }
+
+    @media (max-width: 680px) {
+      #hud { top: 10px; left: 10px; width: calc(100vw - 20px); padding: 12px; }
+      h1 { font-size: 17px; margin-bottom: 9px; }
+      #ritual-panel { top: auto; right: 10px; bottom: 10px; width: calc(100vw - 20px); }
+      #dialogue { bottom: 10px; padding: 14px; }
+      #dialogue-text { font-size: 15px; line-height: 1.62; }
+      #choice-list.gua-grid { grid-template-columns: repeat(2, 1fr); }
+      #interaction-prompt { bottom: 84px; max-width: calc(100vw - 24px); text-align: center; }
+      #status { right: 10px; bottom: 10px; }
+      #toast { bottom: 48px; max-width: calc(100vw - 28px); text-align: center; }
+      .title-card { padding: 32px 22px 28px; }
+      #return-universe { top: auto; right: 10px; bottom: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <button id="return-universe" type="button">← 返回 Meme 宇宙</button>
+  <section id="title-screen" aria-label="玄墟八象问命标题页">
+    <div class="title-card">
+      <div class="title-seal">玄</div>
+      <div class="eyebrow">THE UNWRITTEN HEXAGRAM</div>
+      <h2>玄墟八象问命</h2>
+      <p>你是命册中没有姓名的界外映世者。走过迎仙门，以三道手印唤醒卦池，再决定这份力量将去往何处。</p>
+      <button id="enter-world" type="button">进入玄墟</button>
+      <div id="auto-countdown">模型载入后将自动开演</div>
+    </div>
+  </section>
+
+  <aside id="hud">
+    <div class="eyebrow">XUANXU · EIGHT SIGNS</div>
+    <h1>玄墟八象问命</h1>
+    <div class="state-grid">
+      <div class="value-pill"><span class="value-label">运行状态</span><span class="value" id="mode-value">自动云游</span></div>
+      <div class="value-pill"><span class="value-label">当前映世者</span><span class="value" id="actor-value">载入中</span></div>
+      <div class="value-pill"><span class="value-label">镜头</span><span class="value" id="camera-value">云门建立</span></div>
+      <div class="value-pill"><span class="value-label">身法</span><span class="value" id="flight-value">地面行走</span></div>
+      <div class="value-pill story"><span class="value-label">剧情进度</span><span class="value" id="story-value">等待入界</span></div>
+    </div>
+    <div class="controls">
+      <div class="control"><b>WASD</b><br>移动</div>
+      <div class="control"><b>拖动鼠标</b><br>控制视角</div>
+      <div class="control"><b>Space</b><br>起飞 / 落地</div>
+      <div class="control"><b>E</b><br>互动 / 继续</div>
+      <div class="control"><b>1 / 2 / 3</b><br>三段结印</div>
+      <div class="control"><b>4 秒无操作</b><br>自动续演</div>
+    </div>
+    <div class="action-row">
+      <button type="button" data-action="flight">踏云</button>
+      <button type="button" data-action="camera">换运镜</button>
+      <button type="button" data-action="actor">换角色</button>
+      <button type="button" data-action="story">重演剧情</button>
+    </div>
+  </aside>
+
+  <aside id="ritual-panel" aria-live="polite">
+    <div class="ritual-title">照面引雷</div>
+    <div id="ritual-hint">依次完成：张掌 → 握拳 → 再次张掌</div>
+    <div class="ritual-actions">
+      <button type="button" data-gesture="open">1 · 张掌</button>
+      <button type="button" data-gesture="fist">2 · 握拳</button>
+      <button type="button" data-gesture="release">3 · 再张掌</button>
+    </div>
+  </aside>
+
+  <section id="dialogue" aria-live="polite">
+    <div class="dialogue-meta"><span id="dialogue-speaker">玄墟</span><span id="dialogue-scene">门外无名</span></div>
+    <p id="dialogue-text"></p>
+    <div id="choice-list"></div>
+    <form id="custom-choice">
+      <input id="custom-input" type="text" maxlength="120" autocomplete="off" placeholder="也可以亲自回答青衣仙君……">
+      <button type="submit">说出此念</button>
+    </form>
+    <div class="dialogue-footer"><button id="dialogue-next" type="button">继续 · E</button></div>
+  </section>
+
+  <section id="gua-reveal" aria-live="polite">
+    <div class="gua-card"><span id="gua-symbol">震</span><div id="gua-name">震卦 · 雷灵根</div><div id="gua-world">晶石共振，主楼锁链晚响一拍。</div></div>
+  </section>
+  <div id="world-flash"></div>
+  <div id="interaction-prompt"></div>
+  <div id="reticle"></div>
+  <div id="toast"></div>
+  <div id="status">准备载入…</div>
+
+  <script>
+    const status = document.querySelector('#status');
+    const enterButton = document.querySelector('#enter-world');
+    const autoCountdown = document.querySelector('#auto-countdown');
+    const returnUniverse = document.querySelector('#return-universe');
+    window.__xuanxuEntryQueued = false;
+
+    const sendRuntimeMessage = (type, extra = {}) => {
+      if (window.parent === window) return;
+      window.parent.postMessage({
+        source: 'world-runtime',
+        type,
+        worldId: 'kunpeng-immortal-realm',
+        version: 'story-world-v1.3.1',
+        ...extra,
+      }, '*');
+    };
+
+    returnUniverse.addEventListener('click', () => sendRuntimeMessage('WORLD_EXIT'));
+    addEventListener('load', () => sendRuntimeMessage('WORLD_READY'));
+
+    const showError = (reason) => {
+      const message = reason instanceof Error ? reason.message : String(reason || '未知错误');
+      status.classList.add('error');
+      status.textContent = `载入失败：${message}`;
+      autoCountdown.classList.add('error');
+      autoCountdown.textContent = `3D 世界未能启动：${message}\n请关闭页面后重新双击 start-preview.command`;
+      enterButton.disabled = true;
+      enterButton.textContent = '世界启动失败';
+      document.body.dataset.error = message;
+      document.body.dataset.enterState = 'error';
+    };
+    addEventListener('error', (event) => {
+      showError(event.error || event.message);
+      sendRuntimeMessage('WORLD_ERROR', { code: 'XUANXU_RUNTIME_ERROR', message: String(event.message || '运行时错误') });
+    });
+    addEventListener('unhandledrejection', (event) => {
+      showError(event.reason);
+      sendRuntimeMessage('WORLD_ERROR', { code: 'XUANXU_RUNTIME_REJECTION', message: String(event.reason || '资源载入失败') });
+    });
+
+    enterButton.addEventListener('click', () => {
+      if (location.protocol === 'file:') {
+        showError('不能直接双击 index.html，请使用 start-preview.command');
+        return;
+      }
+      window.__xuanxuEntryQueued = true;
+      enterButton.disabled = true;
+      enterButton.textContent = '正在准备玄墟……';
+      enterButton.setAttribute('aria-busy', 'true');
+      autoCountdown.classList.remove('error');
+      autoCountdown.textContent = '已收到入界请求 · 正在启动 3D 世界';
+      document.body.dataset.enterState = 'queued-inline';
+      window.__xuanxuStartExperience?.();
+    });
+
+    if (location.protocol === 'file:') {
+      status.classList.add('error');
+      status.textContent = '不能直接双击 index.html。\n请返回上一级目录，双击“start-preview.command”。';
+      document.body.dataset.error = 'file-protocol';
+      enterButton.textContent = '请使用 start-preview.command';
+      autoCountdown.classList.add('error');
+      autoCountdown.textContent = '当前是直接打开 HTML，浏览器会阻止 3D 模型。';
+    } else {
+      const script = document.createElement('script');
+      // Cowork injects a document-wide <base> pointing at the app root. Resolve
+      // from the iframe document URL itself so this nested runtime keeps loading
+      // its sibling bundle instead of falling through to the SPA HTML shell.
+      script.src = new URL('./app.bundle.js?v=story-world-v1.3.5-cowork', window.location.href).href;
+      script.onerror = () => showError('查看器脚本缺失或无法访问');
+      document.body.append(script);
+      setTimeout(() => {
+        if (document.body.dataset.ready === 'true' || document.body.dataset.error) return;
+        autoCountdown.textContent = window.__xuanxuEntryQueued
+          ? '入界请求已记住 · 46 MB 模型仍在载入，请稍候'
+          : '46 MB 模型仍在载入 · 完成后自动开演';
+      }, 8000);
+    }
+  </script>
+</body>
+</html>
