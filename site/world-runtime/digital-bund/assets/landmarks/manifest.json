@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-09T11:34:30.457Z",
+  "sourceRoot": "artifacts/tripo-landmarks-20260809",
+  "budgets": {
+    "baseColorMaxDimension": 2048,
+    "normalOrmEmissiveDetailMaxDimension": 1024
+  },
+  "meshopt": {
+    "extension": "EXT_meshopt_compression",
+    "level": "high",
+    "gltfTransformVersion": "4.4.2"
+  },
+  "landmarks": [
+    {
+      "slug": "lujiazui-trio",
+      "url": "/assets/landmarks/lujiazui-trio.glb",
+      "source": "artifacts/tripo-landmarks-20260809/lujiazui-trio/generated/tripo-out/digital-bund-lujiazui-trio-p1-df49a4cb/model.glb",
+      "sourceModifiedAt": "2026-08-09T10:40:23.815Z",
+      "sourceSizeBytes": 10747920,
+      "sizeBytes": 1501456,
+      "sha256": "92aa1edc33f52dca9b73164d6ae55d97b1e6dcb861d490efbe7fdfa60d87ab64",
+      "glbVersion": 2,
+      "meshopt": {
+        "appliedByThisRun": true,
+        "sourceAlreadyCompressed": false
+      },
+      "scenes": 1,
+      "nodes": 1,
+      "meshes": {
+        "count": 1,
+        "primitives": 1,
+        "vertices": 24718,
+        "triangles": 16570
+      },
+      "materials": {
+        "count": 1
+      },
+      "textures": {
+        "count": 3
+      },
+      "images": [
+        {
+          "index": 0,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "roles": [
+            "baseColor"
+          ],
+          "maxDimension": 2048
+        },
+        {
+          "index": 1,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "orm"
+          ],
+          "maxDimension": 1024
+        },
+        {
+          "index": 2,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "normal"
+          ],
+          "maxDimension": 1024
+        }
+      ]
+    },
+    {
+      "slug": "nanjing-road-gateway",
+      "url": "/assets/landmarks/nanjing-road-gateway.glb",
+      "source": "artifacts/tripo-landmarks-20260809/nanjing-road-gateway/generated/tripo-out/digital-bund-nanjing-road-gatewa-9b27380d/model.glb",
+      "sourceModifiedAt": "2026-08-09T10:42:29.695Z",
+      "sourceSizeBytes": 7650736,
+      "sizeBytes": 1116844,
+      "sha256": "ba86bce96150504f72374cb972f782cb623e39d395c71178caff2e4cb8608187",
+      "glbVersion": 2,
+      "meshopt": {
+        "appliedByThisRun": true,
+        "sourceAlreadyCompressed": false
+      },
+      "scenes": 1,
+      "nodes": 1,
+      "meshes": {
+        "count": 1,
+        "primitives": 1,
+        "vertices": 27187,
+        "triangles": 16904
+      },
+      "materials": {
+        "count": 1
+      },
+      "textures": {
+        "count": 3
+      },
+      "images": [
+        {
+          "index": 0,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "roles": [
+            "baseColor"
+          ],
+          "maxDimension": 2048
+        },
+        {
+          "index": 1,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "orm"
+          ],
+          "maxDimension": 1024
+        },
+        {
+          "index": 2,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "normal"
+          ],
+          "maxDimension": 1024
+        }
+      ]
+    },
+    {
+      "slug": "oriental-pearl",
+      "url": "/assets/landmarks/oriental-pearl.glb",
+      "source": "artifacts/tripo-landmarks-20260809/oriental-pearl/generated/tripo-out/digital-bund-oriental-pearl-p1-07e84b55/model.glb",
+      "sourceModifiedAt": "2026-08-09T10:40:20.801Z",
+      "sourceSizeBytes": 7162576,
+      "sizeBytes": 1152416,
+      "sha256": "6b20bc219b929a2bb0eb4371a7aae63f0724309b5afeebca0599a998afcf37f1",
+      "glbVersion": 2,
+      "meshopt": {
+        "appliedByThisRun": true,
+        "sourceAlreadyCompressed": false
+      },
+      "scenes": 1,
+      "nodes": 1,
+      "meshes": {
+        "count": 1,
+        "primitives": 1,
+        "vertices": 21342,
+        "triangles": 15349
+      },
+      "materials": {
+        "count": 1
+      },
+      "textures": {
+        "count": 3
+      },
+      "images": [
+        {
+          "index": 0,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "roles": [
+            "baseColor"
+          ],
+          "maxDimension": 2048
+        },
+        {
+          "index": 1,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "orm"
+          ],
+          "maxDimension": 1024
+        },
+        {
+          "index": 2,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "normal"
+          ],
+          "maxDimension": 1024
+        }
+      ]
+    },
+    {
+      "slug": "peace-hotel",
+      "url": "/assets/landmarks/peace-hotel.glb",
+      "source": "artifacts/tripo-landmarks-20260809/peace-hotel/generated/tripo-out/digital-bund-peace-hotel-p1-90c70c4a/model.glb",
+      "sourceModifiedAt": "2026-08-09T10:40:26.616Z",
+      "sourceSizeBytes": 8719972,
+      "sizeBytes": 1134068,
+      "sha256": "25f3a329e761a114450263739de5704fac818f2c4dc559ba4693044abe7ea05c",
+      "glbVersion": 2,
+      "meshopt": {
+        "appliedByThisRun": true,
+        "sourceAlreadyCompressed": false
+      },
+      "scenes": 1,
+      "nodes": 1,
+      "meshes": {
+        "count": 1,
+        "primitives": 1,
+        "vertices": 24384,
+        "triangles": 15749
+      },
+      "materials": {
+        "count": 1
+      },
+      "textures": {
+        "count": 3
+      },
+      "images": [
+        {
+          "index": 0,
+          "mimeType": "image/jpeg",
+          "width": 2048,
+          "height": 2048,
+          "roles": [
+            "baseColor"
+          ],
+          "maxDimension": 2048
+        },
+        {
+          "index": 1,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "orm"
+          ],
+          "maxDimension": 1024
+        },
+        {
+          "index": 2,
+          "mimeType": "image/jpeg",
+          "width": 1024,
+          "height": 1024,
+          "roles": [
+            "normal"
+          ],
+          "maxDimension": 1024
+        }
+      ]
+    }
+  ]
+}

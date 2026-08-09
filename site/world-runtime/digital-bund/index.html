@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#10232b" />
+    <meta
+      name="description"
+      content="A public, walkable 3D interpretation of Shanghai's Bund and Lujiazui skyline."
+    />
+    <title>Digital Bund</title>
+    <script type="module" crossorigin src="./assets/index-CjsbV0Sd.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DTMkHTW4.css">
+  </head>
+  <body>
+    <main id="app" class="app-shell">
+      <div id="scene" class="scene" aria-label="Interactive 3D Digital Bund scene"></div>
+
+      <section id="loading-screen" class="loading-screen" aria-live="polite">
+        <img src="./assets/media/digital-bund-poster.jpg" alt="" aria-hidden="true" />
+        <div class="loading-screen__veil"></div>
+        <div class="loading-screen__content">
+          <span class="loading-screen__mark">外滩</span>
+          <p>正在点亮黄浦江两岸</p>
+          <div class="loading-screen__track"><i id="loading-progress"></i></div>
+          <small>东方明珠 · 和平饭店 · 南京路 · 陆家嘴</small>
+        </div>
+      </section>
+
+      <div id="hud" class="hud">
+        <header class="topbar">
+          <a class="brand" href="./" aria-label="Digital Bund home">
+            <span class="brand__mark" aria-hidden="true">DB</span>
+            <span>
+              <strong>DIGITAL BUND</strong>
+              <small>PUBLIC 3D SHANGHAI</small>
+            </span>
+          </a>
+
+          <div class="toolbar">
+            <form id="landmark-search" class="search" role="search">
+              <label class="sr-only" for="landmark-query">Find a landmark</label>
+              <input
+                id="landmark-query"
+                type="search"
+                list="landmark-options"
+                autocomplete="off"
+                placeholder="Find landmark"
+              />
+              <datalist id="landmark-options">
+                <option value="Oriental Pearl"></option>
+                <option value="Lujiazui Trio"></option>
+                <option value="Peace Hotel"></option>
+                <option value="Nanjing Road Gateway"></option>
+              </datalist>
+              <button type="submit">Locate</button>
+            </form>
+
+            <form id="agent-search" class="search search--agent" role="search">
+              <label class="sr-only" for="agent-query">Control a public Agent alias</label>
+              <input
+                id="agent-query"
+                type="search"
+                list="agent-options"
+                autocomplete="off"
+                placeholder="Public Agent alias"
+              />
+              <datalist id="agent-options">
+                <option value="浦江橘猫"></option>
+                <option value="外滩白山羊"></option>
+                <option value="夜航面罩犬"></option>
+                <option value="江畔歌声犬"></option>
+              </datalist>
+              <button type="submit">Control</button>
+            </form>
+
+            <button id="agent-release" class="pill-button" type="button" hidden>Release Agent</button>
+            <button id="return-hub" class="pill-button" type="button">Cyber Hub</button>
+            <button id="photo-mode" class="pill-button pill-button--accent" type="button" aria-pressed="false">
+              Clean photo
+            </button>
+          </div>
+        </header>
+
+        <section class="scene-copy" aria-label="Scene introduction">
+          <p class="eyebrow">HUANGPU RIVER · GOLDEN HOUR</p>
+          <h1>数字外滩<br />DIGITAL BUND</h1>
+          <p>沿黄浦江漫步，在和平饭店与陆家嘴之间，遇见匿名的动物 Agent 伙伴。</p>
+        </section>
+
+        <aside class="controls-card" aria-label="Movement controls">
+          <span><kbd>WASD</kbd> / <kbd>↑←↓→</kbd> Move</span>
+          <span><kbd>Shift</kbd> Run</span>
+          <span>点击伙伴操控 · 拖动镜头 · 滚轮缩放</span>
+        </aside>
+
+        <div class="touch-controls" aria-label="触屏移动控制">
+          <button type="button" data-move="KeyW" aria-label="向前移动">▲</button>
+          <button type="button" data-move="KeyA" aria-label="向左移动">◀</button>
+          <button type="button" data-move="KeyS" aria-label="向后移动">▼</button>
+          <button type="button" data-move="KeyD" aria-label="向右移动">▶</button>
+        </div>
+
+        <p id="status" class="status" role="status" aria-live="polite">Loading the river environment…</p>
+      </div>
+
+      <button id="photo-exit" class="photo-exit" type="button" aria-label="Exit clean photo mode" hidden>
+        Exit photo
+      </button>
+    </main>
+
+  </body>
+</html>

@@ -1,16 +1,23 @@
-# Cyber Hub · Five Worlds
+# Cyber Hub · Six Worlds
 
 Public deployment artifact restored from the 2026-08-01 Cyber Hub release line.
 
-The site contains the original five-world experience:
+The site preserves the original five-world experience and adds Digital Bund as
+a sixth parallel world:
 
 - Kunpeng Immortal Realm
 - Meme Town
 - Biohazard Town
 - Impossible Mission
 - F1 Racing World
+- Digital Bund
 
 The static site is published from `site/` through Render. Large original media assets use the CDN mappings recorded by the August 1 release pipeline.
+
+Digital Bund ships as a self-contained runtime under
+`site/world-runtime/digital-bund/`. It includes the Huangpu River promenade,
+the Oriental Pearl, the Lujiazui trio, the Peace Hotel, the Nanjing Road
+gateway, and fictional appearance-based animal Agent aliases.
 
 ## Provenance
 
