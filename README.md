@@ -23,7 +23,7 @@ The Cowork edition uses company SSO and PostgreSQL for shared likes, comments, a
 
 ## Archived Cowork package
 
-The GitHub Release asset preserves the independently validated Cowork ZIP used to create this public fallback.
+The [2026-08-06 GitHub Release](https://github.com/Dancejie/cyber-hub-creator-market/releases/tag/cowork-backup-2026-08-06) preserves the independently validated Cowork ZIP used to create this public fallback. Its SHA-256 is `96cf853144970db8afa2859bfa2aff6658200230f08870efeb01355e6cdfbcce`.
 
 ## Rights
 
