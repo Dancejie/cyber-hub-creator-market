@@ -5,6 +5,7 @@
   if (!root) return;
 
   const DELAY_MS = 15000;
+  const RUNTIME_VERSION = '20261028-1';
   let frame = null;
   let frameSrc = '';
   let timeout = 0;
@@ -60,6 +61,13 @@
 
   function reconcile() {
     const next = root.querySelector('iframe[src]');
+    const nextUrl = runtimeUrl(next);
+    // The compiled registry retains an old version: refresh only this runtime's
+    // HTML so existing visitors receive its mobile layout and protocol bridge.
+    if (nextUrl && nextUrl.searchParams.get('v') !== RUNTIME_VERSION) {
+      nextUrl.searchParams.set('v', RUNTIME_VERSION);
+      next.setAttribute('src', nextUrl.href);
+    }
     const nextSrc = next?.getAttribute('src') || '';
     if (next !== frame || nextSrc !== frameSrc) {
       dismiss();
