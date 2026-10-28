@@ -12,6 +12,8 @@
     <title>Digital Bund</title>
     <script type="module" crossorigin src="./assets/index-CjsbV0Sd.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-DTMkHTW4.css">
+    <link rel="stylesheet" href="./mobile-hud.css?v=20261028">
+    <script defer src="./runtime-bridge.js?v=20261028"></script>
   </head>
   <body>
     <main id="app" class="app-shell">
@@ -40,31 +42,31 @@
 
           <div class="toolbar">
             <form id="landmark-search" class="search" role="search">
-              <label class="sr-only" for="landmark-query">Find a landmark</label>
+              <label class="sr-only" for="landmark-query">查找地标</label>
               <input
                 id="landmark-query"
                 type="search"
                 list="landmark-options"
                 autocomplete="off"
-                placeholder="Find landmark"
+                placeholder="选择地标"
               />
               <datalist id="landmark-options">
-                <option value="Oriental Pearl"></option>
-                <option value="Lujiazui Trio"></option>
-                <option value="Peace Hotel"></option>
-                <option value="Nanjing Road Gateway"></option>
+                <option value="Oriental Pearl" label="东方明珠"></option>
+                <option value="Lujiazui Trio" label="陆家嘴"></option>
+                <option value="Peace Hotel" label="和平饭店"></option>
+                <option value="Nanjing Road Gateway" label="南京路"></option>
               </datalist>
-              <button type="submit">Locate</button>
+              <button type="submit">定位</button>
             </form>
 
             <form id="agent-search" class="search search--agent" role="search">
-              <label class="sr-only" for="agent-query">Control a public Agent alias</label>
+              <label class="sr-only" for="agent-query">选择动物伙伴</label>
               <input
                 id="agent-query"
                 type="search"
                 list="agent-options"
                 autocomplete="off"
-                placeholder="Public Agent alias"
+                placeholder="选择动物伙伴"
               />
               <datalist id="agent-options">
                 <option value="浦江橘猫"></option>
@@ -72,13 +74,13 @@
                 <option value="夜航面罩犬"></option>
                 <option value="江畔歌声犬"></option>
               </datalist>
-              <button type="submit">Control</button>
+              <button type="submit">操控</button>
             </form>
 
-            <button id="agent-release" class="pill-button" type="button" hidden>Release Agent</button>
-            <button id="return-hub" class="pill-button" type="button">Cyber Hub</button>
+            <button id="agent-release" class="pill-button" type="button" hidden>退出操控</button>
+            <button id="return-hub" class="pill-button" type="button">返回世界</button>
             <button id="photo-mode" class="pill-button pill-button--accent" type="button" aria-pressed="false">
-              Clean photo
+              纯净画面
             </button>
           </div>
         </header>
@@ -105,8 +107,8 @@
         <p id="status" class="status" role="status" aria-live="polite">Loading the river environment…</p>
       </div>
 
-      <button id="photo-exit" class="photo-exit" type="button" aria-label="Exit clean photo mode" hidden>
-        Exit photo
+      <button id="photo-exit" class="photo-exit" type="button" aria-label="退出拍照" hidden>
+        退出拍照
       </button>
     </main>
 

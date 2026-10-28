@@ -1,0 +1,37 @@
+/* Phone controls remain inside the viewport instead of a clipped toolbar. */
+@media (max-width: 820px) {
+  .topbar {
+    top: max(10px, env(safe-area-inset-top));
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
+    display: block;
+  }
+  .topbar > .brand { display: none; }
+  .toolbar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    max-width: none;
+    gap: 8px;
+    padding: 0;
+    overflow: visible;
+  }
+  .toolbar .search { grid-column: 1 / -1; width: 100%; min-width: 0; min-height: 44px; }
+  .toolbar .search input { width: 0; min-width: 0; flex: 1; font-size: 16px; line-height: 1.4; padding: 10px 14px; }
+  .toolbar .search button { flex: 0 0 68px; }
+  .toolbar button { min-height: 44px; font-size: 14px; font-weight: 600; line-height: 1.4; }
+  .toolbar [hidden] { display: none; }
+  #agent-release { grid-column: 1 / -1; }
+  .photo-exit { opacity: 1; min-height: 44px; font-size: 14px; }
+  .status {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    max-height: 56px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .touch-controls { bottom: calc(max(78px, env(safe-area-inset-bottom) + 64px)); }
+  .loading-screen__content small { font-size: 12px; letter-spacing: .02em; line-height: 1.6; text-align: center; }
+}

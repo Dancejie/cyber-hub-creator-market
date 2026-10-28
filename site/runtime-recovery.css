@@ -1,0 +1,24 @@
+.runtime-recovery {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: min(420px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid #ffffff40;
+  border-radius: 16px;
+  background: #13191ff2;
+  color: #fff;
+  box-shadow: 0 12px 36px #0006;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.runtime-recovery strong { font-size: 18px; font-weight: 600; }
+.runtime-recovery p { margin: 8px 0 16px; color: #d8dde0; }
+.runtime-recovery__actions { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.runtime-recovery a { min-height: 44px; display: inline-flex; align-items: center; color: #fff; font-size: 14px; text-decoration: none; }
+.runtime-recovery__direct { padding: 0 16px; background: #f2e9d4; color: #20272b !important; border-radius: 8px; font-weight: 600; }
+.runtime-recovery a:focus-visible { outline: 2px solid #f2e9d4; outline-offset: 4px; }
